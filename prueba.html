@@ -1,0 +1,25 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Prueba de campos</title>
+<style>
+body{font-family:system-ui,sans-serif;margin:0;padding:16px;background:#FFF3C4}
+h1{font-size:20px}button.open{display:block;width:100%;margin:10px 0;padding:14px;font-size:17px;border-radius:12px;border:2px solid #1A8350;background:#fff;font-weight:700}
+.scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;justify-content:center;z-index:50}
+.scrim.bottom{align-items:flex-end}.scrim.mid{align-items:center;padding:12px}
+.sheet{background:#fff;width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:18px 16px;max-height:90%;overflow:auto}
+.scrim.mid .sheet{border-radius:24px;max-height:calc(100% - 24px)}
+.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;position:relative;margin:10px 0}
+label{display:block;font-size:13px;color:#555;margin-bottom:4px}
+input{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:11px 12px;border:1.5px solid #ccc;border-radius:12px;height:48px}
+.grow input:focus{position:absolute;left:0;right:0;bottom:0;width:100%;z-index:3}
+.close{margin-top:12px;padding:10px 16px;border-radius:99px;border:1.5px solid #ccc;background:#fff;font-weight:700}
+</style></head><body>
+<h1>Prueba de campos</h1><p>Pulsa cada botón, toca el campo «Nombre» e intenta escribir. Apunta qué números te dejan escribir.</p>
+<button class="open" data-k="1">1 · Ventana abajo, campos normales</button>
+<button class="open" data-k="2">2 · Ventana centrada, campos normales</button>
+<button class="open" data-k="3">3 · Ventana abajo, campo que se ensancha</button>
+<button class="open" data-k="4">4 · Ventana centrada, campo que se ensancha</button>
+<div id="root"></div>
+<script>
+document.addEventListener('click',e=>{const b=e.target.closest('.open');if(b){const k=+b.dataset.k;const mid=k%2===0,grow=k>2;
+ document.getElementById('root').innerHTML=`<div class="scrim ${mid?'mid':'bottom'}"><div class="sheet"><b>Prueba ${k}</b><div class="pair ${grow?'grow':''}"><div><label>Nombre</label><input type="text" placeholder="Escribe aquí"></div><div><label>Departamento</label><input type="text" placeholder="Otro campo"></div></div><button class="close">Cerrar</button></div></div>`;return}
+ if(e.target.closest('.close'))document.getElementById('root').innerHTML=''});
+</script></body></html>

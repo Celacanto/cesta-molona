@@ -287,9 +287,10 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 .le-pair select{width:100%;min-width:0}
 .le-pair select,.le-pair input{height:48px;box-sizing:border-box}
 .le-pair{position:relative}
+@media (pointer:fine){
 #le-name:focus,#le-desc:focus,#le-alias:focus{position:absolute;left:0;right:0;bottom:0;width:100%;z-index:3;box-shadow:0 6px 18px rgba(0,0,0,.12)}
 .le-pair:has(input:focus) .field:not(:has(input:focus)) label{visibility:hidden}
-.le-pair:has(#le-alias:focus) label[for=le-alias]{position:absolute;left:0;top:0}
+.le-pair:has(#le-alias:focus) label[for=le-alias]{position:absolute;left:0;top:0}}
 .le-supdel{flex:0 0 auto;padding:6px 2px!important}
 .le-secbtn{width:100%;height:48px;box-sizing:border-box;margin:0!important;font-weight:500}
 .le-secbtn .lsb-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -1075,7 +1076,7 @@ function openListaEdit(id,ord,draft){let x=draft||S.lista[id];if(!x)return;let i
   const chosen=x.sup&&S.supers[x.sup]&&!(x.hideSup||[]).includes(x.sup)?x.sup:(mt&&!mt.fuzzy?(pickFor(mt.k,mt.by)||{}).super:null);
   const hid=new Set(x.hideSup||[]),add=new Set(x.addSup||[]);
   const prices=Object.entries(S.supers).filter(([sid,sp])=>!hid.has(sid)&&(by[sid]||add.has(sid)||(!sp.solo&&superFits(sp,liDept(x))))).map(([sid,sp])=>{const v=by[sid];return `<div class="row" style="flex-wrap:nowrap;gap:8px"><span style="flex:1;min-width:0"><button type="button" class="lesup${sid===chosen?' on':''}" data-lesup="${esc(sid)}" aria-pressed="${sid===chosen}" title="Comprar en ${esc(sp.name)}"><span class="radio" aria-hidden="true"></span><span class="stxt">${superName(sid)}</span></button></span><input type="text" inputmode="decimal" autocomplete="off" style="width:100px" id="le-p-${esc(sid)}" data-sid="${esc(sid)}" data-pid="${esc(v?.id||'')}" value="${v&&v.price>0?(+v.price).toFixed(2).replace('.',','):''}" data-orig="${v&&v.price>0?(+v.price).toFixed(2).replace('.',','):''}" placeholder="Sin precio"><span class="mono">€</span><button type="button" class="lidel le-supdel" data-lesupdel="${esc(sid)}" aria-label="Quitar ${esc(sp.name)} de este artículo">🗑</button></div>`}).join('');
-  $('#sheet-root').innerHTML=`<div class="scrim mid" id="scrim"><div class="sheet le-sheet" role="dialog" aria-modal="true" aria-label="Editar artículo"><div class="le-title"><h2>${isNew?'Añadir artículo':'Editar artículo'}</h2></div><form id="le" class="stack">
+  $('#sheet-root').innerHTML=`<div class="scrim" id="scrim"><div class="sheet le-sheet" role="dialog" aria-modal="true" aria-label="Editar artículo"><div class="le-title"><h2>${isNew?'Añadir artículo':'Editar artículo'}</h2></div><form id="le" class="stack">
     <div class="le-pair"><div class="field"><label for="le-name">Nombre</label><input id="le-name" type="text" value="${esc(x.name)}" placeholder="Nombre del artículo" autocomplete="off" required></div>
     <div class="field"><label for="le-secbtn">Departamento</label><select id="le-sec" hidden>${DEPTS.map(d=>`<option value="${d.id}"${d.id===liDept(x)?' selected':''}>${d.icon} ${d.name}</option>`).join('')}</select><button type="button" class="catbtn le-secbtn" id="le-secbtn" aria-haspopup="dialog"><span class="lsb-t">${DEPT[liDept(x)]?.icon||''} ${esc(DEPT[liDept(x)]?.name||'')}</span><span aria-hidden="true">▾</span></button></div></div>
     <div class="le-pair"><div class="field"><label for="le-desc">Descripción</label><input id="le-desc" type="text" value="${esc(x.desc||'')}" placeholder="Ej. 1 kg, para las niñas…" autocomplete="off"></div>
@@ -1403,7 +1404,7 @@ boot();
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='51';
+const APP_BUILD='52';
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
 if ('serviceWorker' in navigator) {
