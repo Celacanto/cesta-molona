@@ -19,7 +19,7 @@
 <style>
 /* Layout: a thermal-ticket strip pinned on top holds the money, a price-tag aisle scrolls below, an app tab bar sits at the bottom. */
 :root{
-  --bg:#FFF3C4;        /* white page */
+  --bg:#FFFFFF;        /* white page */
   --soft:#F1F5F0;      /* light tint for tracks, steppers and badges */
   --surface:#FFFFFF;
   --ink:#17231C;
@@ -1415,7 +1415,7 @@ document.addEventListener('touchstart',e=>{if(!document.querySelector('#sheet-ro
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='54';
+const APP_BUILD='55';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
