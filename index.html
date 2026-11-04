@@ -108,8 +108,8 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 #li-search{position:sticky;top:0;z-index:22;background:var(--bg);margin-top:0;padding-top:12px;margin-inline:-16px;padding-inline:16px;padding-bottom:2px}
 #li-search{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px;align-items:stretch;padding-bottom:6px}
 #li-search .sb-in{position:relative;min-width:0}
-#li-search:has(.sb-in:focus-within){grid-template-columns:minmax(0,1fr)}
-#li-search:has(.sb-in:focus-within) #li-cat-slot{display:none}
+#li-search.sfocus{grid-template-columns:minmax(0,1fr)}
+#li-search.sfocus #li-cat-slot{display:none}
 #li-search input{padding-right:34px}
 #li-search input::-webkit-search-cancel-button{-webkit-appearance:none;appearance:none;display:none}
 #liq-clear{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:26px;height:26px;border-radius:50%;border:0;background:var(--muted);color:#fff;font-size:18px;font-weight:700;line-height:1;display:grid;place-items:center;padding:0;cursor:pointer}
@@ -287,10 +287,10 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 .le-pair select{width:100%;min-width:0}
 .le-pair select,.le-pair input{height:48px;box-sizing:border-box}
 .le-pair{position:relative}
-@media (pointer:fine){
-#le-name:focus,#le-desc:focus,#le-alias:focus{position:absolute;left:0;right:0;bottom:0;width:100%;z-index:3;box-shadow:0 6px 18px rgba(0,0,0,.12)}
-.le-pair:has(input:focus) .field:not(:has(input:focus)) label{visibility:hidden}
-.le-pair:has(#le-alias:focus) label[for=le-alias]{position:absolute;left:0;top:0}}
+/* The field being typed in widens to the whole row (toggled from JS: iPhone blurs fields when :has(:focus) is used) */
+.le-pair.w1 .field:first-child input,.le-pair.w2 .field:last-child input{position:absolute;left:0;right:0;bottom:0;width:100%;z-index:3;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+.le-pair.w1 .field:last-child label,.le-pair.w2 .field:first-child label{visibility:hidden}
+.le-pair.w2 .field:last-child label{position:absolute;left:0;top:0}
 .le-supdel{flex:0 0 auto;padding:6px 2px!important}
 .le-secbtn{width:100%;height:48px;box-sizing:border-box;margin:0!important;font-weight:500}
 .le-secbtn .lsb-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -1078,7 +1078,7 @@ function openListaEdit(id,ord,draft){let x=draft||S.lista[id];if(!x)return;let i
   const chosen=x.sup&&S.supers[x.sup]&&!(x.hideSup||[]).includes(x.sup)?x.sup:(mt&&!mt.fuzzy?(pickFor(mt.k,mt.by)||{}).super:null);
   const hid=new Set(x.hideSup||[]),add=new Set(x.addSup||[]);
   const prices=Object.entries(S.supers).filter(([sid,sp])=>!hid.has(sid)&&(by[sid]||add.has(sid)||(!sp.solo&&superFits(sp,liDept(x))))).map(([sid,sp])=>{const v=by[sid];return `<div class="row" style="flex-wrap:nowrap;gap:8px"><span style="flex:1;min-width:0"><button type="button" class="lesup${sid===chosen?' on':''}" data-lesup="${esc(sid)}" aria-pressed="${sid===chosen}" title="Comprar en ${esc(sp.name)}"><span class="radio" aria-hidden="true"></span><span class="stxt">${superName(sid)}</span></button></span><input type="text" inputmode="decimal" autocomplete="off" style="width:100px" id="le-p-${esc(sid)}" data-sid="${esc(sid)}" data-pid="${esc(v?.id||'')}" value="${v&&v.price>0?(+v.price).toFixed(2).replace('.',','):''}" data-orig="${v&&v.price>0?(+v.price).toFixed(2).replace('.',','):''}" placeholder="Sin precio"><span class="mono">€</span><button type="button" class="lidel le-supdel" data-lesupdel="${esc(sid)}" aria-label="Quitar ${esc(sp.name)} de este artículo">🗑</button></div>`}).join('');
-  $('#sheet-root').innerHTML=`<div class="scrim" id="scrim"><div class="sheet le-sheet" role="dialog" aria-modal="true" aria-label="Editar artículo"><div class="le-title"><h2>${isNew?'Añadir artículo':'Editar artículo'}</h2></div><form id="le" class="stack">
+  $('#sheet-root').innerHTML=`<div class="scrim mid" id="scrim"><div class="sheet le-sheet" role="dialog" aria-modal="true" aria-label="Editar artículo"><div class="le-title"><h2>${isNew?'Añadir artículo':'Editar artículo'}</h2></div><form id="le" class="stack">
     <div class="le-pair"><div class="field"><label for="le-name">Nombre</label><input id="le-name" type="text" value="${esc(x.name)}" placeholder="Nombre del artículo" autocomplete="off" required></div>
     <div class="field"><label for="le-secbtn">Departamento</label><select id="le-sec" hidden>${DEPTS.map(d=>`<option value="${d.id}"${d.id===liDept(x)?' selected':''}>${d.icon} ${d.name}</option>`).join('')}</select><button type="button" class="catbtn le-secbtn" id="le-secbtn" aria-haspopup="dialog"><span class="lsb-t">${DEPT[liDept(x)]?.icon||''} ${esc(DEPT[liDept(x)]?.name||'')}</span><span aria-hidden="true">▾</span></button></div></div>
     <div class="le-pair"><div class="field"><label for="le-desc">Descripción</label><input id="le-desc" type="text" value="${esc(x.desc||'')}" placeholder="Ej. 1 kg, para las niñas…" autocomplete="off"></div>
@@ -1389,22 +1389,18 @@ $('#liq').addEventListener('input',()=>{$('#liq-clear').hidden=!$('#liq').value;
 $('#liq-clear').addEventListener('click',()=>{const i=$('#liq');i.value='';$('#liq-clear').hidden=true;renderLista();i.focus()});
 switchTab('frecuentes');
 boot();
-/* TEMPORARY diagnostics for the iPhone problem: shows errors, and which element receives a tap inside a window */
+/* Widening fields and the search bar: plain classes set on focus (no :has, which upsets iPhone) */
+document.addEventListener('focusin',e=>{const el=e.target;if(!(el instanceof HTMLInputElement))return;
+  const pair=el.closest('.le-pair');if(pair&&el.type==='text'){const f=el.closest('.field');pair.classList.toggle('w1',f===pair.firstElementChild);pair.classList.toggle('w2',f===pair.lastElementChild)}
+  if(el.closest('#li-search .sb-in'))$('#li-search').classList.add('sfocus')});
+document.addEventListener('focusout',e=>{const el=e.target;const pair=el.closest&&el.closest('.le-pair');if(pair)pair.classList.remove('w1','w2');
+  if(el.closest&&el.closest('#li-search .sb-in'))setTimeout(()=>{if(!document.activeElement||!document.activeElement.closest('#li-search .sb-in'))$('#li-search').classList.remove('sfocus')},0)});
+
+/* Shows unexpected errors on screen (tap the red box to close it) */
 function diag(m){let d=document.getElementById('diag');if(!d){d=document.createElement('div');d.id='diag';d.style.cssText='position:fixed;left:8px;right:8px;top:calc(8px + env(safe-area-inset-top,0px));z-index:100000;background:#b00020;color:#fff;font:12px/1.35 ui-monospace,monospace;padding:8px 10px;border-radius:10px;white-space:pre-wrap;max-height:40vh;overflow:auto';d.onclick=()=>d.remove();document.body.appendChild(d)}d.textContent+=m+'\n'}
 window.addEventListener('error',e=>diag('Error: '+e.message+' · línea '+(e.lineno||'?')));
 window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.reason.message)||e.reason)));
-(function(){let seq=[],el0='';const pill=()=>{let p=document.getElementById('tapinfo');if(!p){p=document.createElement('div');p.id='tapinfo';p.style.cssText='position:fixed;left:6px;right:6px;top:calc(6px + env(safe-area-inset-top,0px));z-index:100001;background:#183A27;color:#fff;font:12px/1.35 ui-monospace,monospace;padding:6px 10px;border-radius:12px;pointer-events:none;white-space:pre-wrap';document.body.appendChild(p)}return p};
-  const desc=x=>x?x.tagName.toLowerCase()+(x.id?'#'+x.id:''):'-';
-  const code={touchstart:'TS',touchend:'TE',touchcancel:'TC',mousedown:'MD',mouseup:'MU',click:'CL',focusin:'FOC',focusout:'BLUR',scroll:'SCR'};
-  const on=ev=>window.addEventListener(ev,e=>{if(!document.querySelector('#sheet-root .scrim'))return;
-    if(ev==='touchstart'){seq=[];const t=e.touches[0];el0=desc(document.elementFromPoint(t.clientX,t.clientY))}
-    if(ev==='scroll'&&seq[seq.length-1]==='SCR')return;
-    seq.push(code[ev]+(ev==='focusin'||ev==='focusout'||ev==='click'?'('+desc(e.target)+')':'')+(ev==='touchstart'&&e.defaultPrevented?'!':''));
-    pill().textContent='👆 '+el0+'\n'+seq.join(' · ')+'\nactivo: '+desc(document.activeElement)},{capture:true,passive:true});
-  Object.keys(code).forEach(on);
-  // report if something cancels the tap
-  window.addEventListener('touchend',e=>setTimeout(()=>{if(e.defaultPrevented&&document.querySelector('#sheet-root .scrim'))pill().textContent+='\n(toque cancelado por código)'},0),{capture:true});
-})();
+
 
 
 /* Menu button: the tab bar drops down under the yellow header and closes after choosing a tab */
@@ -1423,7 +1419,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='57';
+const APP_BUILD='58';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
