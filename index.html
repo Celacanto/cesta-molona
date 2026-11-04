@@ -286,10 +286,10 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 .le-pair .field{min-width:0}
 .le-pair select{width:100%;min-width:0}
 .le-pair select,.le-pair input{height:48px;box-sizing:border-box}
-/* The field being typed in widens to the whole row (the other one of the pair folds away) */
-.le-pair:has(.field:first-child input:focus){grid-template-columns:minmax(0,1fr) 0;column-gap:0}
-.le-pair:has(.field:last-child input:focus){grid-template-columns:0 minmax(0,1fr);column-gap:0}
-.le-pair:has(input:focus) .field:not(:has(input:focus)){visibility:hidden;overflow:hidden;min-width:0}
+.le-pair{position:relative}
+#le-name:focus,#le-desc:focus,#le-alias:focus{position:absolute;left:0;right:0;bottom:0;width:100%;z-index:3;box-shadow:0 6px 18px rgba(0,0,0,.12)}
+.le-pair:has(input:focus) .field:not(:has(input:focus)) label{visibility:hidden}
+.le-pair:has(#le-alias:focus) label[for=le-alias]{position:absolute;left:0;top:0}
 .le-supdel{flex:0 0 auto;padding:6px 2px!important}
 .le-secbtn{width:100%;height:48px;box-sizing:border-box;margin:0!important;font-weight:500}
 .le-secbtn .lsb-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -494,7 +494,7 @@ body{overflow-x:hidden}
 .le-acts{display:flex;gap:6px;margin-left:auto}
 
 /* Centred windows scroll inside themselves when they do not fit (e.g. with the phone keyboard open) */
-.scrim.mid .sheet{max-height:calc(100% - 24px);overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.scrim.mid .sheet{max-height:calc(100% - 24px);overflow:auto}
 .le-sheet{animation:none}
 
 /* Start screen: just the icon on a full-screen yellow background, on every device */
@@ -596,6 +596,7 @@ html.splashing,html.splashing body{background:#FFD23F}
         <p class="muted" style="margin:0;font-size:13.5px">Guarda todos tus datos (artículos, precios, cesta, tickets y otros gastos) en un archivo, o cárgalos desde uno.</p>
         <div class="row"><button type="button" class="btn ghost sm" id="bk-export">⬇️ Exportar mis datos</button><button type="button" class="btn sm" id="bk-import">⬆️ Importar datos</button></div>
         <input type="file" id="bk-file" accept=".json,application/json" hidden>
+       <p class="muted" id="app-ver" style="margin:0;font-size:12px"></p>
       </div>
     </section>
 
@@ -832,7 +833,7 @@ async function importData(file){try{const data=JSON.parse(await file.text());if(
   catch(e){console.warn(e);toast('Ese archivo no es una copia de La Cesta Molona')}}
 function confirmImport(n){const b=$('#bk-import');if(b.dataset.armed)return true;return true}
 function renderCompras(){
-  {const bk=$('#backup');if(bk)bk.hidden=mode!=='local'}
+  {const bk=$('#backup');if(bk)bk.hidden=mode!=='local';const av=$('#app-ver');if(av)av.textContent=typeof APP_BUILD!=='undefined'?`Versión de la app: ${APP_BUILD}`:''}
   const sel=$('#cp-super');const v=sel.value==='__new'?'':sel.value;sel.innerHTML=optionsSupers(v||S.settings.defaultSuper||'mercadona')+'<option value="__new">➕ Nuevo supermercado…</option>';if(v&&S.supers[v])sel.value=v;else if(S.supers[S.settings.defaultSuper||'mercadona'])sel.value=S.settings.defaultSuper||'mercadona';
   if(!$('#cp-date').value)$('#cp-date').value=today();
   {const v=$('#cp-dept').value||'alimentacion';$('#cp-dept').innerHTML=tipoOptions(v)}
@@ -1385,8 +1386,6 @@ $('#liq').addEventListener('input',()=>{$('#liq-clear').hidden=!$('#liq').value;
 $('#liq-clear').addEventListener('click',()=>{const i=$('#liq');i.value='';$('#liq-clear').hidden=true;renderLista();i.focus()});
 switchTab('frecuentes');
 boot();
-/* When a field inside a window gets the keyboard, bring it into view inside the window */
-document.addEventListener('focusin',e=>{const el=e.target;if(!(el instanceof HTMLInputElement)||!el.closest('.sheet'))return;setTimeout(()=>{try{el.scrollIntoView({block:'nearest'})}catch(_){}},350)});
 
 /* Menu button: the tab bar drops down under the yellow header and closes after choosing a tab */
 (function(){const bar=$('#tabbar'),btn=$('#tb-menu');
@@ -1404,7 +1403,7 @@ document.addEventListener('focusin',e=>{const el=e.target;if(!(el instanceof HTM
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='50';
+const APP_BUILD='51';
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
 if ('serviceWorker' in navigator) {
