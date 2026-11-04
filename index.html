@@ -1393,10 +1393,18 @@ boot();
 function diag(m){let d=document.getElementById('diag');if(!d){d=document.createElement('div');d.id='diag';d.style.cssText='position:fixed;left:8px;right:8px;top:calc(8px + env(safe-area-inset-top,0px));z-index:100000;background:#b00020;color:#fff;font:12px/1.35 ui-monospace,monospace;padding:8px 10px;border-radius:10px;white-space:pre-wrap;max-height:40vh;overflow:auto';d.onclick=()=>d.remove();document.body.appendChild(d)}d.textContent+=m+'\n'}
 window.addEventListener('error',e=>diag('Error: '+e.message+' · línea '+(e.lineno||'?')));
 window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.reason.message)||e.reason)));
-document.addEventListener('touchstart',e=>{if(!document.querySelector('#sheet-root .scrim'))return;const t=e.touches[0];const el=document.elementFromPoint(t.clientX,t.clientY);if(!el)return;
-  let p=document.getElementById('tapinfo');if(!p){p=document.createElement('div');p.id='tapinfo';p.style.cssText='position:fixed;left:50%;transform:translateX(-50%);top:calc(6px + env(safe-area-inset-top,0px));z-index:100001;background:#183A27;color:#fff;font:12px ui-monospace,monospace;padding:5px 10px;border-radius:99px;pointer-events:none;max-width:94vw;overflow:hidden;white-space:nowrap;text-overflow:ellipsis';document.body.appendChild(p)}
-  const desc=x=>x.tagName.toLowerCase()+(x.id?'#'+x.id:'')+(typeof x.className==='string'&&x.className?'.'+x.className.trim().split(/\s+/).join('.'):'');
-  p.textContent='👆 '+desc(el)+(el.parentElement?' ‹ '+desc(el.parentElement):'')},{passive:true,capture:true});
+(function(){let seq=[],el0='';const pill=()=>{let p=document.getElementById('tapinfo');if(!p){p=document.createElement('div');p.id='tapinfo';p.style.cssText='position:fixed;left:6px;right:6px;top:calc(6px + env(safe-area-inset-top,0px));z-index:100001;background:#183A27;color:#fff;font:12px/1.35 ui-monospace,monospace;padding:6px 10px;border-radius:12px;pointer-events:none;white-space:pre-wrap';document.body.appendChild(p)}return p};
+  const desc=x=>x?x.tagName.toLowerCase()+(x.id?'#'+x.id:''):'-';
+  const code={touchstart:'TS',touchend:'TE',touchcancel:'TC',mousedown:'MD',mouseup:'MU',click:'CL',focusin:'FOC',focusout:'BLUR',scroll:'SCR'};
+  const on=ev=>window.addEventListener(ev,e=>{if(!document.querySelector('#sheet-root .scrim'))return;
+    if(ev==='touchstart'){seq=[];const t=e.touches[0];el0=desc(document.elementFromPoint(t.clientX,t.clientY))}
+    if(ev==='scroll'&&seq[seq.length-1]==='SCR')return;
+    seq.push(code[ev]+(ev==='focusin'||ev==='focusout'||ev==='click'?'('+desc(e.target)+')':'')+(ev==='touchstart'&&e.defaultPrevented?'!':''));
+    pill().textContent='👆 '+el0+'\n'+seq.join(' · ')+'\nactivo: '+desc(document.activeElement)},{capture:true,passive:true});
+  Object.keys(code).forEach(on);
+  // report if something cancels the tap
+  window.addEventListener('touchend',e=>setTimeout(()=>{if(e.defaultPrevented&&document.querySelector('#sheet-root .scrim'))pill().textContent+='\n(toque cancelado por código)'},0),{capture:true});
+})();
 
 
 /* Menu button: the tab bar drops down under the yellow header and closes after choosing a tab */
@@ -1415,7 +1423,7 @@ document.addEventListener('touchstart',e=>{if(!document.querySelector('#sheet-ro
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='55';
+const APP_BUILD='56';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
