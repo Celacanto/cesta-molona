@@ -3,7 +3,7 @@
    - Páginas: primero la red (para recibir siempre la última versión) y, si no hay conexión, la copia guardada.
    - Resto de archivos (iconos, fuentes): primero la copia guardada y se actualiza en segundo plano.
    Cambia VERSION cada vez que publiques una versión nueva de index.html. */
-const VERSION = 'cesta-molona-v49';
+const VERSION = 'cesta-molona-v50';
 const APP_SHELL = [
   './',
   './index.html',
@@ -34,7 +34,7 @@ self.addEventListener('fetch', event => {
   // Páginas (navegación): red primero, copia guardada si no hay conexión
   if (req.mode === 'navigate') {
     event.respondWith(
-      fetch(req)
+      fetch(req.url, { cache: 'no-cache' }) // pregunta siempre si hay versión nueva, sin fiarse de la caché del navegador
         .then(res => { const copy = res.clone(); caches.open(VERSION).then(c => c.put('./index.html', copy)); return res; })
         .catch(() => caches.match('./index.html'))
     );
