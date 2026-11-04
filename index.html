@@ -286,10 +286,10 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 .le-pair .field{min-width:0}
 .le-pair select{width:100%;min-width:0}
 .le-pair select,.le-pair input{height:48px;box-sizing:border-box}
-.le-pair{position:relative}
-#le-name:focus,#le-desc:focus,#le-alias:focus{position:absolute;left:0;right:0;bottom:0;width:100%;z-index:3;box-shadow:0 6px 18px rgba(0,0,0,.12)}
-.le-pair:has(input:focus) .field:not(:has(input:focus)) label{visibility:hidden}
-.le-pair:has(#le-alias:focus) label[for=le-alias]{position:absolute;left:0;top:0}
+/* The field being typed in widens to the whole row (the other one of the pair folds away) */
+.le-pair:has(.field:first-child input:focus){grid-template-columns:minmax(0,1fr) 0;column-gap:0}
+.le-pair:has(.field:last-child input:focus){grid-template-columns:0 minmax(0,1fr);column-gap:0}
+.le-pair:has(input:focus) .field:not(:has(input:focus)){visibility:hidden;overflow:hidden;min-width:0}
 .le-supdel{flex:0 0 auto;padding:6px 2px!important}
 .le-secbtn{width:100%;height:48px;box-sizing:border-box;margin:0!important;font-weight:500}
 .le-secbtn .lsb-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
@@ -493,10 +493,8 @@ body{overflow-x:hidden}
 @media (max-width:360px){.le-foot .btn.sm{padding:7px 8px;font-size:12px}}
 .le-acts{display:flex;gap:6px;margin-left:auto}
 
-/* Windows follow the visible area of the screen (it shrinks when the phone keyboard opens) */
-.scrim{top:var(--vvt,0px);bottom:auto;height:var(--vvh,100%)}
-.scrim.mid .sheet{max-height:calc(var(--vvh,100vh) - 24px);overflow:auto;-webkit-overflow-scrolling:touch}
-.nlb .scrim.mid .sheet{max-height:calc(var(--vvh,100vh) - 96px)}
+/* Centred windows scroll inside themselves when they do not fit (e.g. with the phone keyboard open) */
+.scrim.mid .sheet{max-height:calc(100% - 24px);overflow:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
 .le-sheet{animation:none}
 
 /* Start screen: just the icon on a full-screen yellow background, on every device */
@@ -1089,8 +1087,8 @@ function openListaEdit(id,ord,draft){let x=draft||S.lista[id];if(!x)return;let i
   $('#scrim').addEventListener('click',e=>{if(e.target.id==='scrim')close()});
   $('#le-close').onclick=close;
   $('#le-secbtn').onclick=()=>openDeptPicker($('#le-sec').value,did=>{const sel=$('#le-sec');if(!sel.querySelector(`option[value="${did}"]`))sel.add(new Option(DEPT[did].name,did));sel.value=did;$('#le-secbtn .lsb-t').textContent=`${DEPT[did].icon} ${DEPT[did].name}`;dirty=true});
-  $('#le-addsup').onclick=()=>{$('#le-addsup').style.visibility='hidden';const r=$('#le-newsup');r.hidden=false;const i=$('#le-supname');i.focus({preventScroll:true});
-    const show=()=>r.scrollIntoView({block:'nearest',behavior:'smooth'});show();setTimeout(show,350)};
+  $('#le-addsup').onclick=()=>{$('#le-addsup').style.visibility='hidden';const r=$('#le-newsup');r.hidden=false;const i=$('#le-supname');i.focus();
+    setTimeout(()=>r.scrollIntoView({block:'nearest'}),350)};
   const addSupLe=async()=>{const n=$('#le-supname').value.trim();if(!n){$('#le-supname').focus();return}
     if(dirty||isNew){if(await saveLe(true)===false)return}const sid=await createSuper(n,true);const cx=S.lista[id];await store.saveLista(id,{...cx,addSup:[...new Set([...(cx.addSup||[]),sid])],hideSup:(cx.hideSup||[]).filter(v=>v!==sid)});openListaEdit(id,order);const inp=document.querySelector(`#le input[data-sid="${sid}"]`)||document.getElementById('le-p-'+sid);if(inp)inp.focus()};
   $('#le-supok').onclick=addSupLe;
@@ -1387,9 +1385,8 @@ $('#liq').addEventListener('input',()=>{$('#liq-clear').hidden=!$('#liq').value;
 $('#liq-clear').addEventListener('click',()=>{const i=$('#liq');i.value='';$('#liq-clear').hidden=true;renderLista();i.focus()});
 switchTab('frecuentes');
 boot();
-/* Track the visible viewport so open windows stay centred above the keyboard */
-(function(){const vv=window.visualViewport;if(!vv)return;const set=()=>{const r=document.documentElement.style;r.setProperty('--vvh',vv.height+'px');r.setProperty('--vvt',vv.offsetTop+'px')};
-  vv.addEventListener('resize',set);vv.addEventListener('scroll',set);set()})();
+/* When a field inside a window gets the keyboard, bring it into view inside the window */
+document.addEventListener('focusin',e=>{const el=e.target;if(!(el instanceof HTMLInputElement)||!el.closest('.sheet'))return;setTimeout(()=>{try{el.scrollIntoView({block:'nearest'})}catch(_){}},350)});
 
 /* Menu button: the tab bar drops down under the yellow header and closes after choosing a tab */
 (function(){const bar=$('#tabbar'),btn=$('#tb-menu');
@@ -1407,7 +1404,7 @@ boot();
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='48';
+const APP_BUILD='49';
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
 if ('serviceWorker' in navigator) {
