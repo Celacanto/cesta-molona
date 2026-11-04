@@ -584,9 +584,9 @@ html.splashing,html.splashing body{background:#FFD23F}
       <div id="compras"></div>
       <form id="cp-form" class="card stack" style="margin-top:14px" autocomplete="off">
         <h3 style="margin:0">Apuntar un ticket</h3>
-        <div class="row" style="align-items:flex-end">
-          <div class="field" style="flex:1 1 140px"><label for="cp-date">Fecha</label><input id="cp-date" type="date" required></div>
-          <div class="field" style="flex:1 1 110px"><label for="cp-total">Importe (€)</label><input id="cp-total" type="text" inputmode="decimal" autocomplete="off" required placeholder="45,30"></div>
+        <div class="gpair">
+          <div class="field"><label for="cp-date">Fecha</label><input id="cp-date" class="gfield" type="date" required></div>
+          <div class="field"><label for="cp-total">Importe (€)</label><input id="cp-total" class="gfield" type="text" inputmode="decimal" autocomplete="off" required placeholder="45,30"></div>
         </div>
         <div class="field"><label for="cp-super">Supermercado</label><select id="cp-super"></select></div>
         <div class="row" id="cp-new" hidden style="align-items:flex-end"><div class="field" style="flex:1 1 160px"><label for="cp-newname">Nuevo supermercado</label><input id="cp-newname" type="text" placeholder="Ej. Lidl" autocomplete="off"></div><button type="button" class="btn sm" id="cp-newadd">Añadir</button><button type="button" class="btn ghost sm" id="cp-newcancel">Cancelar</button></div>
@@ -815,8 +815,8 @@ function openGastoEdit(id){const g=S.gastos[id];if(!g)return;
   $('#sheet-root').innerHTML=`<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-label="Editar gasto"><h2>Editar gasto</h2>
     <form id="ge" class="stack" autocomplete="off">
       <div class="gcats" id="ge-cats">${GCATS.map(c=>`<button type="button" class="gcat" role="radio" aria-checked="${g.cat===c.id}" data-gecat="${c.id}"><span>${c.icon}</span>${c.name}</button>`).join('')}</div>
-      <div class="row" style="align-items:flex-end"><div class="field" style="flex:1 1 140px"><label for="ge-date">Fecha</label><input id="ge-date" type="date" required value="${esc(g.date)}"></div>
-      <div class="field" style="flex:1 1 110px"><label for="ge-amount">Importe (€)</label><input id="ge-amount" type="text" inputmode="decimal" required value="${(+g.amount).toFixed(2).replace('.',',')}"></div></div>
+      <div class="gpair"><div class="field"><label for="ge-date">Fecha</label><input id="ge-date" class="gfield" type="date" required value="${esc(g.date)}"></div>
+      <div class="field"><label for="ge-amount">Importe (€)</label><input id="ge-amount" class="gfield" type="text" inputmode="decimal" required value="${(+g.amount).toFixed(2).replace('.',',')}"></div></div>
       <div class="field"><label for="ge-notes">Observaciones <span class="muted">· opcional</span></label><input id="ge-notes" type="text" value="${esc(g.notes||'')}"></div>
       <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" id="ge-cancel">Cancelar</button><button type="submit" class="btn">Guardar cambios</button></div>
     </form></div></div>`;
@@ -965,9 +965,9 @@ function openDeptPicker(cur,onPick){const all=Object.values(S.lista);const cnt=i
 function openPurchaseEdit(id){const p=S.purchases[id];if(!p)return;
   $('#sheet-root').innerHTML=`<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-label="Editar ticket"><h2>Editar ticket</h2>
     <form id="pe" class="stack" autocomplete="off">
-      <div class="row" style="align-items:flex-end">
-        <div class="field" style="flex:1 1 140px"><label for="pe-date">Fecha</label><input id="pe-date" type="date" required value="${esc(p.date||'')}"></div>
-        <div class="field" style="flex:1 1 110px"><label for="pe-total">Importe (€)</label><input id="pe-total" type="text" inputmode="decimal" autocomplete="off" required value="${(+p.total||0).toFixed(2).replace('.',',')}"></div>
+      <div class="gpair">
+        <div class="field"><label for="pe-date">Fecha</label><input id="pe-date" class="gfield" type="date" required value="${esc(p.date||'')}"></div>
+        <div class="field"><label for="pe-total">Importe (€)</label><input id="pe-total" class="gfield" type="text" inputmode="decimal" autocomplete="off" required value="${(+p.total||0).toFixed(2).replace('.',',')}"></div>
       </div>
       <div class="field"><label for="pe-super">Supermercado</label><select id="pe-super">${optionsSupers(p.super)}</select></div>
       <div class="field"><label for="pe-dept">Departamento${(p.items||[]).length?' <span class="muted">· de lo no detallado</span>':''}</label><select id="pe-dept">${tipoOptions(tipoOfPurchase(p))}</select></div>
@@ -1389,6 +1389,15 @@ $('#liq').addEventListener('input',()=>{$('#liq-clear').hidden=!$('#liq').value;
 $('#liq-clear').addEventListener('click',()=>{const i=$('#liq');i.value='';$('#liq-clear').hidden=true;renderLista();i.focus()});
 switchTab('frecuentes');
 boot();
+/* TEMPORARY diagnostics for the iPhone problem: shows errors, and which element receives a tap inside a window */
+function diag(m){let d=document.getElementById('diag');if(!d){d=document.createElement('div');d.id='diag';d.style.cssText='position:fixed;left:8px;right:8px;top:calc(8px + env(safe-area-inset-top,0px));z-index:100000;background:#b00020;color:#fff;font:12px/1.35 ui-monospace,monospace;padding:8px 10px;border-radius:10px;white-space:pre-wrap;max-height:40vh;overflow:auto';d.onclick=()=>d.remove();document.body.appendChild(d)}d.textContent+=m+'\n'}
+window.addEventListener('error',e=>diag('Error: '+e.message+' · línea '+(e.lineno||'?')));
+window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.reason.message)||e.reason)));
+document.addEventListener('touchstart',e=>{if(!document.querySelector('#sheet-root .scrim'))return;const t=e.touches[0];const el=document.elementFromPoint(t.clientX,t.clientY);if(!el)return;
+  let p=document.getElementById('tapinfo');if(!p){p=document.createElement('div');p.id='tapinfo';p.style.cssText='position:fixed;left:50%;transform:translateX(-50%);top:calc(6px + env(safe-area-inset-top,0px));z-index:100001;background:#183A27;color:#fff;font:12px ui-monospace,monospace;padding:5px 10px;border-radius:99px;pointer-events:none;max-width:94vw;overflow:hidden;white-space:nowrap;text-overflow:ellipsis';document.body.appendChild(p)}
+  const desc=x=>x.tagName.toLowerCase()+(x.id?'#'+x.id:'')+(typeof x.className==='string'&&x.className?'.'+x.className.trim().split(/\s+/).join('.'):'');
+  p.textContent='👆 '+desc(el)+(el.parentElement?' ‹ '+desc(el.parentElement):'')},{passive:true,capture:true});
+
 
 /* Menu button: the tab bar drops down under the yellow header and closes after choosing a tab */
 (function(){const bar=$('#tabbar'),btn=$('#tb-menu');
@@ -1406,7 +1415,7 @@ boot();
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='53';
+const APP_BUILD='54';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
