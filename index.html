@@ -201,7 +201,7 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 
 
 
-.li-fq{grid-column:1 / -1;display:flex;align-items:center;gap:10px;margin-top:6px}
+.li-fq{grid-column:2;display:flex;align-items:center;gap:10px;margin-top:6px}
 .li-fq .falta{vertical-align:0}
 .li-fq.appear{animation:fqIn .28s ease-out both;overflow:hidden}
 @keyframes fqIn{from{opacity:0;max-height:0;margin-top:0}to{opacity:1;max-height:48px;margin-top:6px}}
@@ -211,6 +211,7 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 .li.got .li-name,.li.got .lpb{opacity:.5}
 .li.got .li-step{opacity:.45}
 .li-step button{width:28px;height:28px;font-size:17px}
+@media (max-width:360px){.li.on .lpb{align-self:start}.li-fq{gap:6px}.li-step{padding:2px}.li-step button{width:24px;height:24px;font-size:15px}.li-step output{min-width:18px}.li-fq .fbtn{padding:4px 6px}}
 .li-name{border:0;background:none;padding:0;font:inherit;color:inherit;text-align:left;cursor:pointer;overflow-wrap:anywhere}
 .li-tog .box{padding:0;cursor:pointer;background:var(--surface)}
 .li-tog{display:grid;grid-template-columns:28px minmax(0,1fr);column-gap:10px;row-gap:0;align-items:center;border:0;background:transparent;text-align:left;font:inherit;color:inherit;padding:4px 0;min-width:0}
@@ -1156,7 +1157,7 @@ function renderLista(){
   const cartOf={};{const used=new Set();for(const cid of Object.keys(S.cart)){const p=S.products[cid];if(!p||!(S.cart[cid]>0))continue;const lid=listaIdsOfProduct(p).find(l=>S.lista[l]?.falta&&!(l in cartOf));if(lid){cartOf[lid]=cid;used.add(cid)}}}
   const qtyHtml=(id,x)=>{if(!x.falta)return '';const cid=cartOf[id];if(S.justOn===id&&!S.justOnR)S.justOnR=Date.now();const el=S.justOn===id?Date.now()-S.justOnR:1e9;const ap=el<280?` appear" style="animation-delay:-${el}ms`:'';
     if(!cid)return `<div class="li-fq${ap}"><span class="falta fbtn">Falta</span><div class="stepper sm li-step"><button type="button" disabled aria-hidden="true">−</button><output>1</output><button type="button" class="plus" disabled aria-hidden="true">+</button></div></div>`;const q=S.cart[cid]||1;const got=!!S.picked[cid];
-    return `<div class="li-fq${ap}"><button type="button" class="falta fbtn${got?' got':''}" data-lpick="${esc(cid)}" aria-pressed="${got}" aria-label="${got?'Marcar como que aún falta':'Marcar como comprado'}: ${esc(x.name)}">${got?'✓ Cogido':'Falta'}</button><div class="stepper sm li-step"><button type="button" data-dec="${esc(cid)}" aria-label="Quitar uno de ${esc(x.name)}">−</button><output>${q}</output><button type="button" class="plus" data-inc="${esc(cid)}" aria-label="Añadir uno de ${esc(x.name)}">+</button></div></div>`};
+    return `<div class="li-fq${ap}"><button type="button" class="falta fbtn${got?' got':''}" data-lpick="${esc(cid)}" aria-pressed="${got}" aria-label="${got?'Marcar como que aún falta':'Marcar como comprado'}: ${esc(x.name)}">${got?'✓ Listo':'Falta'}</button><div class="stepper sm li-step"><button type="button" data-dec="${esc(cid)}" aria-label="Quitar uno de ${esc(x.name)}">−</button><output>${q}</output><button type="button" class="plus" data-inc="${esc(cid)}" aria-label="Añadir uno de ${esc(x.name)}">+</button></div></div>`};
   const rowHtml=([id,x])=>{const mt=matchLista(x);const xs=x.sup&&S.supers[x.sup]?x.sup:null;const best=xs?(mt&&mt.by[xs]?{super:xs,...mt.by[xs]}:null):(mt&&pickFor(mt.k,mt.by));const n=mt?Object.keys(mt.by).length:0;
         const info=best?`<span class="lp"><span class="mono">${money(best.price)}</span>${superText(best.super)}</span>`:(xs?`<span class="lp"><span class="muted">sin precio</span>${superText(xs)}</span>`:`<span class="lp muted">sin precio</span>`);
         return `<div class="li${x.falta?' on':''}${x.falta&&cartOf[id]&&S.picked[cartOf[id]]?' got':''}"><div class="li-tog"><button type="button" class="box" data-falta="${esc(id)}" aria-pressed="${!!x.falta}" aria-label="${x.falta?'Ya no falta':'Falta'}: ${esc(x.name)}">${x.falta?'✓':''}</button><button type="button" class="name li-name" data-liedit="${esc(id)}" aria-label="Editar ${esc(x.name)}">${esc(x.name)}${x.desc?`<span class="li-desc">(${esc(x.desc)})</span>`:''}</button>${qtyHtml(id,x)}</div><button type="button" class="lpb" data-liedit="${esc(id)}" aria-label="Editar ${esc(x.name)}">${info}</button><button type="button" class="lidel" data-lidelc="${esc(id)}" aria-label="Eliminar ${esc(x.name)}">🗑</button></div>`};
@@ -1418,7 +1419,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='60';
+const APP_BUILD='61';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
