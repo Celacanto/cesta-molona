@@ -513,7 +513,7 @@ body{overflow-x:hidden}
 .cf-a{color:#1E5AA8}.cf-b{color:#D2372E}
 
 /* Back-to-top button (Artículos) */
-#to-top{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;width:48px;height:48px;border-radius:14px;border:0;background:var(--basket);color:#fff;display:grid;place-items:center;box-shadow:0 6px 18px rgba(0,0,0,.22);cursor:pointer;transition:opacity .2s ease,transform .2s ease}
+#to-top{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;width:48px;height:48px;border-radius:15px;border:2.5px solid var(--ink);background:var(--tag);color:var(--basket);display:grid;place-items:center;box-shadow:3px 4px 0 var(--ink);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:opacity .2s ease,transform .2s ease,box-shadow .12s ease}#to-top:active{transform:translate(2px,3px);box-shadow:1px 1px 0 var(--ink)}
 #to-top[hidden]{display:grid!important;opacity:0;transform:translateY(12px);pointer-events:none}
 </style>
 </head>
@@ -619,7 +619,7 @@ body{overflow-x:hidden}
   <button role="tab" data-tab="gastos" aria-selected="false"><span class="ti ti-bulb">💶</span>Otros gastos</button>
 </nav></div>
 
-<button type="button" id="to-top" aria-label="Volver arriba" hidden><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5M5 12l7-7 7 7"/></svg></button>
+<button type="button" id="to-top" aria-label="Volver arriba" hidden><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12.5l6-6 6 6"/><path d="M6 19l6-6 6 6" opacity=".45"/></svg></button>
 <div id="sheet-root"></div>
 <div class="toast" id="toast" hidden></div>
 
@@ -1397,7 +1397,7 @@ switchTab('frecuentes');
 boot();
 /* Back-to-top button: shown in Artículos once you have scrolled down */
 (function(){const b=$('#to-top');const upd=()=>{const h=($('.ticket')?.offsetHeight||120);b.hidden=!(S.tab==='frecuentes'&&scrollY>h)};
-  addEventListener('scroll',upd,{passive:true});b.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+  addEventListener('scroll',upd,{passive:true});const go=e=>{e.preventDefault();scrollTo({top:0,behavior:'smooth'})};b.addEventListener('touchend',go,{passive:false});b.addEventListener('click',go);
   const sw=switchTab;switchTab=function(t){sw(t);upd()};upd()})();
 
 /* Widening fields and the search bar: plain classes set on focus (no :has, which upsets iPhone) */
@@ -1430,7 +1430,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='64';
+const APP_BUILD='65';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
