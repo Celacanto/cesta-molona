@@ -514,7 +514,7 @@ body{overflow-x:hidden}
 .cf-a{color:#1E5AA8}.cf-b{color:#D2372E}
 
 /* Back-to-top button (Artículos) */
-#to-top{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;width:48px;height:48px;border-radius:15px;border:2.5px solid var(--ink);background:var(--tag);color:var(--basket);display:grid;place-items:center;box-shadow:3px 4px 0 var(--ink);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:opacity .2s ease,transform .2s ease,box-shadow .12s ease}#to-top:active{transform:translate(2px,3px);box-shadow:1px 1px 0 var(--ink)}
+#to-top{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;width:58px;height:58px;border-radius:17px;border:2.5px solid var(--ink);background:var(--tag);color:var(--basket);display:grid;place-items:center;box-shadow:3px 4px 0 var(--ink);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:opacity .2s ease,transform .2s ease,box-shadow .12s ease}#to-top:active{transform:translate(2px,3px);box-shadow:1px 1px 0 var(--ink)}
 #to-top[hidden]{display:grid!important;opacity:0;transform:translateY(12px);pointer-events:none}
 </style>
 </head>
@@ -620,7 +620,7 @@ body{overflow-x:hidden}
   <button role="tab" data-tab="gastos" aria-selected="false"><span class="ti ti-bulb">💶</span>Otros gastos</button>
 </nav></div>
 
-<button type="button" id="to-top" aria-label="Volver arriba" hidden><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12.5l6-6 6 6"/><path d="M6 19l6-6 6 6" opacity=".45"/></svg></button>
+<button type="button" id="to-top" aria-label="Volver arriba" hidden><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12.5l6-6 6 6"/><path d="M6 19l6-6 6 6" opacity=".45"/></svg></button>
 <div id="sheet-root"></div>
 <div class="toast" id="toast" hidden></div>
 
@@ -1431,7 +1431,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='67';
+const APP_BUILD='68';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
