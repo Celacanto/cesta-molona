@@ -619,7 +619,7 @@ body{overflow-x:hidden}
   <button role="tab" data-tab="gastos" aria-selected="false"><span class="ti ti-bulb">💶</span>Otros gastos</button>
 </nav></div>
 
-<button type="button" id="to-top" aria-label="Volver arriba" hidden><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12.5l6-6 6 6"/><path d="M6 19l6-6 6 6" opacity=".45"/></svg></button>
+<button type="button" id="to-top" aria-label="Volver arriba" hidden><svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12.5l6-6 6 6"/><path d="M6 19l6-6 6 6" opacity=".45"/></svg></button>
 <div id="sheet-root"></div>
 <div class="toast" id="toast" hidden></div>
 
@@ -1430,7 +1430,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='65';
+const APP_BUILD='66';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
