@@ -1396,7 +1396,7 @@ $('#liq-clear').addEventListener('click',()=>{const i=$('#liq');i.value='';$('#l
 switchTab('frecuentes');
 boot();
 /* Back-to-top button: shown in Artículos once you have scrolled down */
-(function(){const b=$('#to-top');const upd=()=>{b.hidden=!(S.tab==='frecuentes'&&scrollY>500)};
+(function(){const b=$('#to-top');const upd=()=>{const h=($('.ticket')?.offsetHeight||120);b.hidden=!(S.tab==='frecuentes'&&scrollY>h)};
   addEventListener('scroll',upd,{passive:true});b.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
   const sw=switchTab;switchTab=function(t){sw(t);upd()};upd()})();
 
@@ -1430,7 +1430,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='63';
+const APP_BUILD='64';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});

@@ -3,7 +3,7 @@
    - Páginas: primero la red (para recibir siempre la última versión) y, si no hay conexión, la copia guardada.
    - Resto de archivos (iconos, fuentes): primero la copia guardada y se actualiza en segundo plano.
    Cambia VERSION cada vez que publiques una versión nueva de index.html. */
-const VERSION = 'cesta-molona-v63';
+const VERSION = 'cesta-molona-v64';
 const APP_SHELL = [
   './',
   './index.html',
