@@ -124,6 +124,7 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 .chips{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
 .chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
 .chip[aria-pressed=true]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
+#li-top{display:grid;place-items:center}#li-top[aria-pressed=true]{background:var(--ticket);color:var(--ticket-ink);border:2px solid var(--ink);box-shadow:2px 3px 0 var(--ink)}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 auto}
 
 .sup-dept{display:flex;align-items:center;gap:6px;margin:12px 0 2px;padding:3px 10px;width:max-content;max-width:100%;border-radius:999px;background:var(--soft);border:1px solid var(--line);font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}.sup-dept:first-child{margin-top:2px}.sup-dept .n{font-family:var(--f-mono);font-weight:600;opacity:.8}
@@ -1156,7 +1157,7 @@ function renderLista(){
   const head=all.length?`<div class="card lista-head"><div class="li-acts">
       <button class="chip" id="li-clear" ${faltan.length?'':'disabled'}>Desmarcar todo</button>
       <button class="chip li-gocart" id="li-buy" ${faltan.length?'':'disabled'}>✓ Comprado</button>
-      <button class="chip" id="li-top" aria-pressed="${!!S.faltaTop}">CESTA</button>
+      <button class="chip" id="li-top" aria-pressed="${!!S.faltaTop}" aria-label="Ver la cesta por súper y categoría"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4h2.6l2.3 10.6a1.6 1.6 0 0 0 1.6 1.3h8.3a1.6 1.6 0 0 0 1.6-1.2L20.7 8H6.2"/><path d="M9.5 11.5h8.6" opacity=".55"/><circle cx="9.6" cy="19.6" r="1.5" fill="currentColor"/><circle cx="17.3" cy="19.6" r="1.5" fill="currentColor"/></svg></button>
       <button class="chip addchip" data-addsheet="1"><span class="pl">✚</span> Añadir</button></div>
     </div>`
     :`<div class="empty"><div class="big">Aún no tienes artículos</div><p>Añade aquí lo que compras siempre y, antes de ir al súper, marca lo que te falta.</p><div class="row" style="justify-content:center"><button class="btn" data-addsheet="1">✚ Añadir artículo</button>${mode==='local'?'<button class="btn ghost" data-bkimport="1">⬆️ Importar mis datos</button>':''}</div></div>`;
@@ -1431,7 +1432,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='68';
+const APP_BUILD='69';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
