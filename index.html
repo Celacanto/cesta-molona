@@ -983,7 +983,7 @@ document.addEventListener('click',async e=>{
   if(d.falta){const x=S.lista[d.falta];if(x){
     if(!x.falta){S.justOn=d.falta;S.justOnR=0}
     const qi=$('#liq'),hadQ=!!(qi&&qi.value);if(hadQ){qi.value='';$('#liq-clear').hidden=true;qi.blur()}
-    await store.saveLista(d.falta,{...x,falta:!x.falta});syncCart();if(hadQ){renderLista();requestAnimationFrame(()=>document.querySelector(`[data-falta="${CSS.escape(d.falta)}"]`)?.closest('.li')?.scrollIntoView({block:'center'}))}}return}
+    await store.saveLista(d.falta,{...x,falta:!x.falta});syncCart();if(hadQ){renderLista();window.scrollTo({top:0,behavior:'instant'})}}return}
   if(d.lidelc){if(t.dataset.armed){const n=S.lista[d.lidelc]?.name||'';await deleteListaFull(d.lidelc);toast(`“${n}” eliminado`)}
     else{t.dataset.armed=1;t.textContent='¿Borrar?';t.classList.add('on');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='🗑';t.classList.remove('on')}},4000)}return}
   if(t.id==='licat-open'){openCatPicker();return}
@@ -1501,7 +1501,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='77';
+const APP_BUILD='78';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
