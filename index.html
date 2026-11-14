@@ -124,7 +124,7 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 .chips{display:flex;gap:6px;overflow-x:auto;padding:10px 0 2px;scrollbar-width:none}
 .chip{flex:0 0 auto;border:1.5px solid var(--line);background:var(--surface);border-radius:99px;padding:5px 12px;font-size:13px;font-weight:600;display:inline-flex;align-items:center;gap:6px}
 .chip[aria-pressed=true]{border-color:var(--ink);background:var(--ink);color:var(--bg)}
-#li-top{display:grid;place-items:center}.chip#li-top,.chip.li-menu{background:var(--ticket);color:var(--ticket-ink);border:2px solid transparent}#li-top[aria-pressed=true]{background:var(--ticket);color:var(--ticket-ink);border:2px solid var(--ink);box-shadow:2px 3px 0 var(--ink)}
+#li-top{display:grid;place-items:center}.chip#li-top,.chip.li-menu{background:var(--ticket);color:var(--ticket-ink);border:2px solid var(--ink);box-shadow:2px 3px 0 var(--ink);transition:transform .1s,box-shadow .1s}.chip#li-top:active,.chip#li-top[aria-pressed=true],.chip.li-menu:active,.chip.li-menu[aria-pressed=true]{transform:translate(2px,3px);box-shadow:0 0 0 var(--ink)}#li-top[aria-pressed=true]{background:var(--ticket);color:var(--ticket-ink);border:2px solid var(--ink);box-shadow:2px 3px 0 var(--ink)}
 .dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:0 0 auto}
 
 .sup-dept{display:flex;align-items:center;gap:6px;margin:12px 0 2px;padding:3px 10px;width:max-content;max-width:100%;border-radius:999px;background:var(--soft);border:1px solid var(--line);font-size:11.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}.sup-dept:first-child{margin-top:2px}.sup-dept .n{font-family:var(--f-mono);font-weight:600;opacity:.8}
@@ -1522,7 +1522,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='85';
+const APP_BUILD='86';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
