@@ -483,7 +483,7 @@ body{overflow-x:hidden}
   .scrim{align-items:center}
 }
 @media (min-width:1100px){.wrap{max-width:960px}}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+@media (prefers-reduced-motion:reduce){*:not(.party){animation:none!important;transition:none!important}}
 
 /* Drop-down tab bar under the yellow header */
 .tabbar{top:120px;bottom:auto!important;left:50%;right:auto;transform:translate(-50%,-8px);width:min(560px,calc(100% - 20px));border:1px solid var(--line);border-radius:20px;box-shadow:0 12px 30px rgba(0,0,0,.18);padding:6px!important;z-index:45;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .18s ease,transform .18s ease,visibility .18s}
@@ -917,7 +917,6 @@ function cestaCompleta(){const rows=[...document.querySelectorAll('.li.on')].fil
 (function(){const r=renderLista;renderLista=function(){const o=r.apply(this,arguments);$('#li-top')?.classList.toggle('done',cestaCompleta());return o}})();
 function celebrar(){S.partyUntil=Date.now()+2600;const c=$('#li-top');if(c){c.classList.remove('party');void c.offsetWidth;c.classList.add('party')}
   setTimeout(()=>{$('#li-top')?.classList.remove('party')},2600);try{navigator.vibrate&&navigator.vibrate([40,60,40,60,120])}catch(_){}
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches){toast('🎉 ¡Compra completa!');return}
   const cv=document.createElement('canvas');cv.className='confeti';document.body.appendChild(cv);const dpr=Math.min(devicePixelRatio||1,2);
   const W=cv.width=innerWidth*dpr,H=cv.height=innerHeight*dpr;const x=cv.getContext('2d');const col=['#FFD23F','#1F9D55','#E8483B','#1E5AA8','#ffffff','#FF8FB1'];
   const r0=(c&&c.getBoundingClientRect())||{left:innerWidth/2,top:innerHeight/3,width:0,height:0};const ox=(r0.left+r0.width/2)*dpr,oy=(r0.top+r0.height/2)*dpr;
@@ -1522,7 +1521,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='88';
+const APP_BUILD='89';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
