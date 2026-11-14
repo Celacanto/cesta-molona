@@ -977,12 +977,13 @@ document.addEventListener('click',async e=>{
   if(d.cdel){if(t.dataset.armed){const n=S.products[d.cdel]?.name||'';delete S.picked[d.cdel];await store.deleteProduct(d.cdel);toast(`“${n}” eliminado`);if(d.rgk){const tg=(d.reopen&&S.products[d.reopen])?d.reopen:groupIds(d.rgk)[0]?.[0];if(tg)openCompare(tg);else $('#sheet-root').innerHTML=''}}
     else{const txt=t.textContent;t.dataset.armed=1;t.textContent=t.classList.contains('cdel')?'¿Borrar?':'¿Seguro? Pulsa otra vez';t.classList.add('on');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent=txt;t.classList.remove('on')}},4000)}return}
   if(d.lpick){if(S.picked[d.lpick])delete S.picked[d.lpick];else S.picked[d.lpick]=true;store.saveCart();renderLista();return}
-  if(t.id==='li-buy'){if(!t.dataset.armed){t.dataset.armed=1;const n=Object.keys(S.picked).filter(k=>S.cart[k]).length;t.textContent=n?`¿Apuntar ${n}?`:'¿Apuntar todo?';t.classList.add('on');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='✓ Comprado';t.classList.remove('on')}},4000);return}
+  if(t.id==='li-buy'){if(!t.dataset.armed){t.dataset.armed=1;const n=Object.keys(S.picked).filter(k=>S.cart[k]).length;t.textContent=n?`¿Apuntar ${n}?`:'¿Apuntar todo?';t.classList.add('on');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='✓ Hecho';t.classList.remove('on')}},4000);return}
     await buyNow(true);return}
   if(d.golista){switchTab('frecuentes');return}
   if(d.falta){const x=S.lista[d.falta];if(x){
     if(!x.falta){S.justOn=d.falta;S.justOnR=0}
-    await store.saveLista(d.falta,{...x,falta:!x.falta});syncCart()}return}
+    const qi=$('#liq'),hadQ=!!(qi&&qi.value);if(hadQ){qi.value='';$('#liq-clear').hidden=true;qi.blur()}
+    await store.saveLista(d.falta,{...x,falta:!x.falta});syncCart();if(hadQ){renderLista();requestAnimationFrame(()=>document.querySelector(`[data-falta="${CSS.escape(d.falta)}"]`)?.closest('.li')?.scrollIntoView({block:'center'}))}}return}
   if(d.lidelc){if(t.dataset.armed){const n=S.lista[d.lidelc]?.name||'';await deleteListaFull(d.lidelc);toast(`“${n}” eliminado`)}
     else{t.dataset.armed=1;t.textContent='¿Borrar?';t.classList.add('on');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='🗑';t.classList.remove('on')}},4000)}return}
   if(t.id==='licat-open'){openCatPicker();return}
@@ -1500,7 +1501,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='76';
+const APP_BUILD='77';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
