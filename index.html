@@ -259,7 +259,7 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 .li-acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:stretch}
 .li-sticky .lista-head{padding:0!important;border:0;box-shadow:none;background:transparent}
 .li-acts .chip{justify-content:center;text-align:center;white-space:normal;line-height:1.15;font-size:12.5px;padding:7px 6px;border-radius:12px;min-height:40px;min-width:0}
-.li-acts .chip.on{background:var(--hot);border-color:var(--hot);color:#fff}.chip#li-clear:not(.on){background:#FDE3E0;border-color:#F4B4AC;color:#A82A20}
+.li-acts .chip.on{background:var(--hot);border-color:var(--hot);color:#fff}.chip#li-clear:not(.on){background:#FDE3E0;border-color:#F4B4AC;color:#A82A20}.li-acts .chip.addchip{background:#DDF3E4;border-color:#8CCFA4;color:#14703A}
 .li-acts .li-gocart{background:var(--basket);border-color:var(--basket);color:var(--basket-ink)}
 @media (max-width:380px){.li-acts .chip{font-size:11.5px;padding:6px 6px}.li-acts{gap:4px}}
 .addchip{border-color:var(--basket)!important;color:var(--basket);font-weight:800}
@@ -1522,7 +1522,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='87';
+const APP_BUILD='88';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
