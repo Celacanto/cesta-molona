@@ -439,6 +439,7 @@ input.gfield[type=date]::-webkit-calendar-picker-indicator{margin-left:2px;paddi
 .sheet{background:var(--surface);width:100%;max-width:560px;border-radius:24px 24px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom,0px));max-height:90%;overflow:auto;animation:up .25s ease-out}
 @keyframes up{from{transform:translateY(40px);opacity:.4}}
 .sheet h2{margin-top:0}
+.li-ask{position:absolute;inset:0;z-index:5;display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:8px;padding:0 8px;background:var(--ticket);border:2px solid var(--ink);border-radius:12px;animation:askin .16s ease-out}.li-ask span{text-align:center;font-weight:800;font-size:15px;color:var(--ticket-ink);line-height:1.2}.li-ask button{min-width:64px;height:40px;border-radius:10px;font-weight:800;font-size:15px;border:2px solid var(--ink);cursor:pointer;touch-action:manipulation}.li-ask .ask-yes{background:var(--ink);color:#fff}.li-ask .ask-no{background:#fff;color:var(--ink)}@keyframes askin{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}.li{position:relative}
 .casa-on{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--basket);color:#fff;padding:2px 8px;border-radius:99px;vertical-align:middle;margin-left:4px}.casa-code{font-size:clamp(20px,6.5vw,28px);font-weight:800;letter-spacing:.08em;text-align:center;padding:12px 8px;border:2px dashed var(--ink);border-radius:14px;background:var(--ticket);color:var(--ticket-ink)}
 .toast{pointer-events:none;position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-weight:700;z-index:60;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
 .notice{font-size:13px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--tag) 30%,var(--surface));margin-top:12px}
@@ -980,7 +981,10 @@ document.addEventListener('click',async e=>{
   if(t.id==='li-buy'){if(!t.dataset.armed){t.dataset.armed=1;const n=Object.keys(S.picked).filter(k=>S.cart[k]).length;t.textContent=n?`¿Apuntar ${n}?`:'¿Apuntar todo?';t.classList.add('on');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='✓ Hecho';t.classList.remove('on')}},4000);return}
     await buyNow(true);return}
   if(d.golista){switchTab('frecuentes');return}
-  if(d.falta){const x=S.lista[d.falta];if(x){
+  if(d.askno!==undefined){t.closest('.li-ask')?.remove();return}
+  if(d.askyes){const x=S.lista[d.askyes];if(x&&x.falta){await store.saveLista(d.askyes,{...x,falta:false});syncCart()}return}
+  if(d.falta){const x=S.lista[d.falta];if(x&&x.falta){const li=t.closest('.li');if(li&&!li.querySelector('.li-ask')){document.querySelectorAll('.li-ask').forEach(e=>e.remove());li.insertAdjacentHTML('beforeend',`<div class="li-ask" role="alertdialog" aria-label="¿Lo quitamos de la cesta?"><button type="button" class="ask-yes" data-askyes="${esc(d.falta)}">Sí</button><span>¿Lo quitamos de la cesta?</span><button type="button" class="ask-no" data-askno="1">No</button></div>`)}return}
+  if(x){
     if(!x.falta){S.justOn=d.falta;S.justOnR=0}
     const qi=$('#liq'),hadQ=!!(qi&&qi.value);if(hadQ){qi.value='';$('#liq-clear').hidden=true;qi.blur()}
     await store.saveLista(d.falta,{...x,falta:!x.falta});syncCart();if(hadQ){renderLista();window.scrollTo({top:0,behavior:'instant'})}}return}
@@ -1225,7 +1229,6 @@ function renderLista(){
   const guesses=faltan.filter(([,x])=>{const m=matchLista(x);return m&&m.fuzzy}).length;
   const head=all.length?`<div class="card lista-head"><div class="li-acts">
       <button class="chip" id="li-top" aria-pressed="${!!S.faltaTop}" aria-label="Ver la cesta por súper y categoría"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4h2.6l2.3 10.6a1.6 1.6 0 0 0 1.6 1.3h8.3a1.6 1.6 0 0 0 1.6-1.2L20.7 8H6.2"/><path d="M9.5 11.5h8.6" opacity=".55"/><circle cx="9.6" cy="19.6" r="1.5" fill="currentColor"/><circle cx="17.3" cy="19.6" r="1.5" fill="currentColor"/></svg></button>
-      <button class="chip li-gocart" id="li-buy" ${faltan.length?'':'disabled'}>✓ Hecho</button>
       <button class="chip" id="li-clear" ${faltan.length?'':'disabled'}>Desmarcar</button>
       <button class="chip addchip" data-addsheet="1"><span class="pl">✚</span> Añadir</button></div>
     </div>`
@@ -1501,7 +1504,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='78';
+const APP_BUILD='79';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
