@@ -55,7 +55,7 @@ button{cursor:pointer}
 .ticket-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1.5px dashed rgba(38,36,31,.35);padding-bottom:6px;margin-bottom:8px}
 .brand{font-family:var(--f-display);font-size:20px;letter-spacing:0;text-transform:none;line-height:1}
 .brand b{color:#14824A;font-weight:400}
-.totals{position:relative;display:flex;justify-content:center;align-items:flex-start;gap:8px clamp(18px,9vw,56px)}.tot.proj{text-align:left}.totals .tb-menu{position:absolute;right:0;top:50%;transform:translateY(-50%)}.totals .tb-menu{display:none!important}.li-acts.tb-row{display:block;margin:10px 0 14px}.li-tabs.static{position:static;animation:none;min-height:58px}html.on-art #tb-row{display:none}.tot-cycle small{overflow:visible}
+.totals{position:relative;display:flex;justify-content:center;align-items:flex-start;gap:8px clamp(18px,9vw,56px)}.tot.proj{text-align:left}.totals .tb-menu{position:absolute;right:0;top:50%;transform:translateY(-50%)}.totals .tb-menu{display:none!important}.li-acts.tb-row{display:block;position:sticky;z-index:19;background:var(--bg);margin:0 -16px 6px;padding:10px 16px 12px}.li-tabs.static{position:static;animation:none;min-height:58px}html.on-art #tb-row{display:none}.tot-cycle small{overflow:visible}
 .tot{min-width:0}
 .chips.dgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:6px;margin-top:12px;overflow:visible}
 .chips.dgrid .chip{position:relative;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:4px;min-width:0;white-space:normal;text-align:left;font-size:11.5px;line-height:1.15;padding:7px 6px;border-radius:12px;height:100%}
@@ -848,7 +848,7 @@ function renderGastos(){
   const tot=all.reduce((a,[,g])=>a+(+g.amount||0),0)+foodTot;const by={_alim:foodTot};all.forEach(([,g])=>{by[g.cat]=(by[g.cat]||0)+(+g.amount||0)});
   const fd=d=>new Date(d+'T12:00').toLocaleDateString('es-ES',{day:'numeric',month:'short'}).replace('.','');
   const graf=false;
-  const bar=`<div class="li-sticky gbar-wrap" style="top:${Math.max(0,($('.ticket')?.offsetHeight||0)-4)}px;z-index:19"><div class="gbar">
+  const bar=`<div class="li-sticky gbar-wrap" style="top:${Math.max(0,($('.ticket')?.offsetHeight||0)-4)+($('#tb-row')?.offsetHeight||0)}px;z-index:18"><div class="gbar">
     <span class="gnav"><button class="chip" data-goff="${off-1}" aria-label="Mes anterior" ${graf&&S.gAll?'disabled':''}><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H5M11 5l-7 7 7 7"/></svg></button><span class="gmes" title="${esc(cycleLabel(st))}">Mes</span><button class="chip" data-goff="${off+1}" aria-label="Mes siguiente" ${off>=0||graf&&S.gAll?'disabled':''}><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7"/></svg></button></span>
     <span class="gtot" title="${S.gAll&&graf?'Total de todos los gastos':esc(cycleLabel(st))}">${money(tot)}</span></div></div>
     ${graf?`<div class="row" style="justify-content:center;margin-top:8px"><button class="chip" data-gall="1" aria-pressed="${!!S.gAll}">Ver todo junto</button></div>`:''}`;
@@ -932,7 +932,8 @@ function renderCompras(){
 function cestaCompleta(){const rows=[...document.querySelectorAll('.li.on')].filter(r=>r.querySelector('[data-lpick]'));if(!rows.length)return false;return [...rows].every(r=>r.classList.contains('got'))}
 (function(){const r=renderLista;renderLista=function(){const o=r.apply(this,arguments);$('#li-top')?.classList.toggle('done',cestaCompleta());return o}})();
 function fillTbRow(cur){const row=$('#tb-row'),bar=$('#tabbar');if(!row||!bar)return;if(cur==='frecuentes'){row.innerHTML='';return}
-  row.innerHTML=`<div class="li-tabs static" role="navigation" aria-label="Pestañas">${[...bar.querySelectorAll('[data-tab]')].filter(b=>b.dataset.tab!==cur).map(b=>`<button type="button" class="lt" data-tab="${b.dataset.tab}">${b.querySelector('.ti')?.outerHTML||''}<span>${esc([...b.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join('').trim())}</span></button>`).join('')}</div>`}
+  row.style.top=Math.max(0,($('.ticket')?.offsetHeight||0)-4)+'px';
+  row.innerHTML=`<div class="li-tabs static" role="navigation" aria-label="Pestañas">${[...bar.querySelectorAll('[data-tab]')].filter(b=>b.dataset.tab!==cur).map(b=>`<button type="button" class="lt" data-tab="${b.dataset.tab}">${b.querySelector('.ti')?.outerHTML||''}<span>${esc([...b.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join('').trim())}</span></button>`).join('')}</div>`;const gw=$('.gbar-wrap');if(gw)gw.style.top=(Math.max(0,($('.ticket')?.offsetHeight||0)-4)+row.offsetHeight)+'px'}
 function celebrar(){S.partyUntil=Date.now()+2600;const c=$('#li-top');if(c){c.classList.remove('party');void c.offsetWidth;c.classList.add('party')}
   setTimeout(()=>{$('#li-top')?.classList.remove('party')},2600);try{navigator.vibrate&&navigator.vibrate([40,60,40,60,120])}catch(_){}
   const cv=document.createElement('canvas');cv.className='confeti';document.body.appendChild(cv);const dpr=Math.min(devicePixelRatio||1,2);
@@ -1545,7 +1546,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='96';
+const APP_BUILD='97';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
