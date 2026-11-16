@@ -844,7 +844,8 @@ function renderGastos(){
   if(!$('#g-date').value)$('#g-date').value=today();
   $('#g-cats').innerHTML=GCATS.map(c=>`<button type="button" class="gcat" role="radio" aria-checked="${S.gCat===c.id}" data-gcat="${c.id}"><span>${c.icon}</span>${c.name}</button>`).join('');
   const off=S.gOff||0;const st=cycleShift(off);const all=Object.entries(S.gastos).filter(([,g])=>S.gAll&&S.gView==='graf'||cycleStartOf(g.date)===st).sort((a,b)=>(b[1].date||'').localeCompare(a[1].date||''));
-  const tot=all.reduce((a,[,g])=>a+(+g.amount||0),0);const by={};all.forEach(([,g])=>{by[g.cat]=(by[g.cat]||0)+(+g.amount||0)});
+  const food=Object.entries(S.purchases).filter(([,p])=>cycleStartOf(pDate(p))===st).sort((a,b)=>pDate(b[1]).localeCompare(pDate(a[1])));const foodTot=food.reduce((a,[,p])=>a+(+p.total||0),0);
+  const tot=all.reduce((a,[,g])=>a+(+g.amount||0),0)+foodTot;const by={_alim:foodTot};all.forEach(([,g])=>{by[g.cat]=(by[g.cat]||0)+(+g.amount||0)});
   const fd=d=>new Date(d+'T12:00').toLocaleDateString('es-ES',{day:'numeric',month:'short'}).replace('.','');
   const graf=false;
   const bar=`<div class="li-sticky gbar-wrap" style="top:${Math.max(0,($('.ticket')?.offsetHeight||0)-4)}px;z-index:19"><div class="gbar">
@@ -863,13 +864,15 @@ function renderGastos(){
   const bud=S.settings.gBudget||{};const hasB=GCATS.some(c=>bud[c.id]>0);S.gOpen=S.gOpen||{};
   const groups=GCATS.map(c=>({c,items:all.filter(([,g])=>g.cat===c.id)})).filter(x=>x.items.length||(+bud[x.c.id]>0));
   const known=new Set(GCATS.map(c=>c.id));const otros=all.filter(([,g])=>!known.has(g.cat));if(otros.length)groups.push({c:{id:'_otros',icon:'🏷️',name:'Otros',c:'#888'},items:otros});
+  if(food.length)groups.push({c:{id:'_alim',icon:'🛒',name:'Alimentación',c:'#14824A'},items:food,food:true});
   groups.sort((x,y)=>(by[y.c.id]||0)-(by[x.c.id]||0));
   const line=([id,g])=>`<div class="line" style="grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px"><button type="button" class="cprow" data-gedit="${esc(id)}"><span class="mono muted" style="font-size:13px">${fd(g.date)}</span><span class="mono" style="font-weight:700;grid-column:3">${money(g.amount)}</span>${g.notes?`<span class="muted" style="grid-column:1/-1;font-size:13px">📝 ${esc(g.notes)}</span>`:''}</button><button type="button" class="lidel" data-gdel="${esc(id)}" aria-label="Borrar gasto">🗑</button></div>`;
-  const card=({c,items})=>{const v=items.reduce((a,[,g])=>a+(+g.amount||0),0);const B=+bud[c.id]||0;const open=!!S.gOpen[c.id];
-    const info=B>0?`<span class="gg-sub">de ${money(B)} · ${v<=B?`<span class="gb-left ok">quedan ${money(B-v)}</span>`:`<span class="gb-left over">te pasas ${money(v-B)}</span>`}</span>`:`<span class="gg-sub muted">${items.length} ${items.length===1?'gasto':'gastos'}</span>`;
+  const fline=([id,p])=>`<div class="line"><div class="cprow" style="cursor:default"><span class="mono muted" style="font-size:13px">${fd(pDate(p))}</span><span class="mono" style="font-weight:700">${money(p.total)}</span><span class="muted" style="font-size:13px">${p.super?superName(p.super):'Ticket'}</span></div></div>`;
+  const card=({c,items,food:isFood})=>{const v=isFood?foodTot:items.reduce((a,[,g])=>a+(+g.amount||0),0);const B=+bud[c.id]||0;const open=!!S.gOpen[c.id];
+    const info=B>0?`<span class="gg-sub">de ${money(B)} · ${v<=B?`<span class="gb-left ok">quedan ${money(B-v)}</span>`:`<span class="gb-left over">te pasas ${money(v-B)}</span>`}</span>`:`<span class="gg-sub muted">${isFood?`${items.length} ${items.length===1?'ticket':'tickets'} · de la pestaña Tickets`:`${items.length} ${items.length===1?'gasto':'gastos'}`}</span>`;
     return `<div class="card gg${open?' open':''}"><button type="button" class="gg-head" data-gtoggle="${esc(c.id)}" aria-expanded="${open}"><span class="gg-ic">${c.icon}</span><span class="gg-name"><b>${esc(c.name)}</b>${info}</span><span class="mono gg-tot">${money(v)}</span><span class="gg-chev" aria-hidden="true">▾</span></button>
       ${B>0?`<div class="gb-track gg-track"><div class="fill" style="width:${Math.min(100,v/B*100)}%;background:${v>B?'var(--danger,#D2372E)':c.c}"></div></div>`:''}
-      ${open?(items.length?`<div class="gg-list">${items.map(line).join('')}</div>`:'<p class="muted" style="margin:8px 0 0;font-size:14px">Sin gastos este mes.</p>'):''}</div>`};
+      ${open?(items.length?`<div class="gg-list">${items.map(isFood?fline:line).join('')}</div>`:'<p class="muted" style="margin:8px 0 0;font-size:14px">Sin gastos este mes.</p>'):''}</div>`};
   $('#gastos').innerHTML=bar+(groups.length?`<div class="gg-wrap">${groups.map(card).join('')}</div>`
       :`<div class="empty"><div class="big">Sin gastos en este ciclo</div><p>Apunta abajo lo que gastes en farmacia, tirititrán, gasolina u otros.</p></div>`)
     +`<div class="row" style="justify-content:center;margin-top:12px"><button class="btn ghost sm" type="button" data-gbudget="1">💰 ${hasB?'Cambiar presupuestos':'Poner presupuestos'}</button></div>`}
@@ -1542,7 +1545,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='93';
+const APP_BUILD='94';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
