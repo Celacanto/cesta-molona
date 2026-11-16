@@ -852,7 +852,7 @@ function renderGastos(){
     <span class="gnav"><button class="chip" data-goff="${off-1}" aria-label="Mes anterior" ${graf&&S.gAll?'disabled':''}><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H5M11 5l-7 7 7 7"/></svg></button><span class="gmes" title="${esc(cycleLabel(st))}">Mes</span><button class="chip" data-goff="${off+1}" aria-label="Mes siguiente" ${off>=0||graf&&S.gAll?'disabled':''}><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7"/></svg></button></span>
     <span class="gtot" title="${S.gAll&&graf?'Total de todos los gastos':esc(cycleLabel(st))}">${money(tot)}</span></div></div>
     ${graf?`<div class="row" style="justify-content:center;margin-top:8px"><button class="chip" data-gall="1" aria-pressed="${!!S.gAll}">Ver todo junto</button></div>`:''}`;
-  if(graf){const max=Math.max(1,...GCATS.map(c=>by[c.id]||0));const bud=S.gAll?{}:(S.settings.gBudget||{});const hasB=GCATS.some(c=>bud[c.id]>0);
+  if(graf){const max=Math.max(1,...GCATS.map(c=>by[c.id]||0));const bud=S.gAll?{}:(S.settings.gBudget||{});const hasB=bud._alim>0||GCATS.some(c=>bud[c.id]>0);
     const btot=GCATS.reduce((a,c)=>a+(+bud[c.id]||0),0);
     const left=(v,B)=>v<=B?`<span class="gb-left ok">Quedan ${money(B-v)}</span>`:`<span class="gb-left over">Te pasas ${money(v-B)}</span>`;
     const rows=[...GCATS].sort((a,b)=>(by[b.id]||0)-(by[a.id]||0)).map(c=>{const v=by[c.id]||0;const B=+bud[c.id]||0;
@@ -861,10 +861,10 @@ function renderGastos(){
     $('#gastos').innerHTML=bar+`<div style="text-align:center;margin:12px 0 8px"><b style="font-size:17px">${S.gAll?'Todos los gastos':esc(cycleLabel(st))}</b></div>
       <div class="card"><div class="gb-list" style="margin-top:0">${rows}</div></div>
       ${S.gAll?'':`<div class="row" style="justify-content:center;margin-top:12px"><button class="btn ghost sm" type="button" data-gbudget="1">💰 ${hasB?'Cambiar presupuestos':'Poner presupuestos'}</button></div>`}`;return}
-  const bud=S.settings.gBudget||{};const hasB=GCATS.some(c=>bud[c.id]>0);S.gOpen=S.gOpen||{};
+  const bud=S.settings.gBudget||{};const hasB=bud._alim>0||GCATS.some(c=>bud[c.id]>0);S.gOpen=S.gOpen||{};
   const groups=GCATS.map(c=>({c,items:all.filter(([,g])=>g.cat===c.id)})).filter(x=>x.items.length||(+bud[x.c.id]>0));
   const known=new Set(GCATS.map(c=>c.id));const otros=all.filter(([,g])=>!known.has(g.cat));if(otros.length)groups.push({c:{id:'_otros',icon:'🏷️',name:'Otros',c:'#888'},items:otros});
-  if(food.length)groups.push({c:{id:'_alim',icon:'🛒',name:'Alimentación',c:'#14824A'},items:food,food:true});
+  if(food.length||+bud._alim>0)groups.push({c:{id:'_alim',icon:'🛒',name:'Alimentación',c:'#14824A'},items:food,food:true});
   groups.sort((x,y)=>(by[y.c.id]||0)-(by[x.c.id]||0));
   const line=([id,g])=>`<div class="line" style="grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px"><button type="button" class="cprow" data-gedit="${esc(id)}"><span class="mono muted" style="font-size:13px">${fd(g.date)}</span><span class="mono" style="font-weight:700;grid-column:3">${money(g.amount)}</span>${g.notes?`<span class="muted" style="grid-column:1/-1;font-size:13px">📝 ${esc(g.notes)}</span>`:''}</button><button type="button" class="lidel" data-gdel="${esc(id)}" aria-label="Borrar gasto">🗑</button></div>`;
   const fline=([id,p])=>`<div class="line"><div class="cprow" style="cursor:default"><span class="mono muted" style="font-size:13px">${fd(pDate(p))}</span><span class="mono" style="font-weight:700">${money(p.total)}</span><span class="muted" style="font-size:13px">${p.super?superName(p.super):'Ticket'}</span></div></div>`;
@@ -879,11 +879,11 @@ function renderGastos(){
 function openBudget(){const bud=S.settings.gBudget||{};const fmt=v=>v>0?(+v).toFixed(2).replace('.',','):'';
   $('#sheet-root').innerHTML=`<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-label="Presupuestos"><h2>Presupuesto de cada mes</h2>
     <p class="muted" style="margin:-4px 0 12px;font-size:14px">Lo máximo que quieres gastar en cada apartado por mes (desde el día ${S.settings.cycleDay||27}). Déjalo vacío si no quieres límite.</p>
-    <form id="gbf" class="stack" autocomplete="off">${GCATS.map(c=>`<div class="gb-in"><label for="gb-${c.id}">${c.icon} ${c.name}</label><div class="gb-eur"><input id="gb-${c.id}" type="text" inputmode="decimal" placeholder="Sin límite" value="${fmt(bud[c.id])}"><span>€</span></div></div>`).join('')}
+    <form id="gbf" class="stack" autocomplete="off">${[{id:'_alim',icon:'🛒',name:'Alimentación'},...GCATS].map(c=>`<div class="gb-in"><label for="gb-${c.id}">${c.icon} ${c.name}</label><div class="gb-eur"><input id="gb-${c.id}" type="text" inputmode="decimal" placeholder="Sin límite" value="${fmt(bud[c.id])}"><span>€</span></div></div>`).join('')}
       <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" id="gb-cancel">Cancelar</button><button type="submit" class="btn">Guardar</button></div></form></div></div>`;
   const close=()=>{$('#sheet-root').innerHTML=''};
   $('#scrim').addEventListener('click',e=>{if(e.target.id==='scrim'||e.target.closest('#gb-cancel'))close()});
-  $('#gbf').addEventListener('submit',async e=>{e.preventDefault();const nb={};GCATS.forEach(c=>{const v=Math.round(parseNum($('#gb-'+c.id).value)*100)/100;if(v>0)nb[c.id]=v});
+  $('#gbf').addEventListener('submit',async e=>{e.preventDefault();const nb={};[{id:'_alim'},...GCATS].forEach(c=>{const v=Math.round(parseNum($('#gb-'+c.id).value)*100)/100;if(v>0)nb[c.id]=v});
     close();await store.saveSettings({...S.settings,gBudget:nb});toast('Presupuestos guardados')})}
 function openGastoEdit(id){const g=S.gastos[id];if(!g)return;
   $('#sheet-root').innerHTML=`<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-label="Editar gasto"><h2>Editar gasto</h2>
@@ -1545,7 +1545,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='95';
+const APP_BUILD='96';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
