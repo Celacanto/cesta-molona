@@ -55,7 +55,7 @@ button{cursor:pointer}
 .ticket-top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;border-bottom:1.5px dashed rgba(38,36,31,.35);padding-bottom:6px;margin-bottom:8px}
 .brand{font-family:var(--f-display);font-size:20px;letter-spacing:0;text-transform:none;line-height:1}
 .brand b{color:#14824A;font-weight:400}
-.totals{position:relative;display:flex;justify-content:center;align-items:flex-start;gap:8px clamp(18px,9vw,56px)}.tot.proj{text-align:left}.totals .tb-menu{position:absolute;right:0;top:50%;transform:translateY(-50%)}.totals .tb-menu{display:none!important}.li-acts.tb-row{display:flex;justify-content:flex-end;margin:10px 0 14px}html.on-art #tb-row{display:none}.tot-cycle small{overflow:visible}
+.totals{position:relative;display:flex;justify-content:center;align-items:flex-start;gap:8px clamp(18px,9vw,56px)}.tot.proj{text-align:left}.totals .tb-menu{position:absolute;right:0;top:50%;transform:translateY(-50%)}.totals .tb-menu{display:none!important}.li-acts.tb-row{display:block;margin:10px 0 14px}.li-tabs.static{position:static;animation:none;min-height:58px}html.on-art #tb-row{display:none}.tot-cycle small{overflow:visible}
 .tot{min-width:0}
 .chips.dgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:6px;margin-top:12px;overflow:visible}
 .chips.dgrid .chip{position:relative;display:flex;flex-direction:row;align-items:center;justify-content:flex-start;gap:4px;min-width:0;white-space:normal;text-align:left;font-size:11.5px;line-height:1.15;padding:7px 6px;border-radius:12px;height:100%}
@@ -443,6 +443,7 @@ input.gfield[type=date]::-webkit-calendar-picker-indicator{margin-left:2px;paddi
 .chip#li-top.done{background:#1F9D55;color:#fff;border-color:#145C33;box-shadow:2px 3px 0 #145C33}
 .confeti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9999}#li-top.party{background:#1F9D55!important;color:#fff!important;border-color:#145C33!important;box-shadow:2px 3px 0 #145C33!important;animation:party 2.6s cubic-bezier(.3,1.6,.5,1) both;position:relative;z-index:6}@keyframes party{0%{transform:scale(1)}12%{transform:scale(1.45) rotate(-6deg)}22%{transform:scale(1.3) rotate(5deg)}32%{transform:scale(1.4) rotate(-3deg)}45%{transform:scale(1.35)}80%{transform:scale(1.35)}100%{transform:scale(1)}}
 .li-acts{position:relative}.li-tabs{position:absolute;inset:-2px;z-index:7;display:flex;gap:6px;background:var(--bg);animation:askin .16s ease-out}.li-tabs .lt{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 2px;border-radius:14px;border:2px solid var(--ink);background:#fff;color:var(--ink);box-shadow:2px 3px 0 var(--ink);font-weight:800;font-size:clamp(11px,3.3vw,12.5px);line-height:1.1;cursor:pointer;touch-action:manipulation}.li-tabs .lt:active{transform:translate(2px,3px);box-shadow:none}.li-tabs .lt .ti{font-size:18px;line-height:1}.li-tabs .lt .ti svg{width:24px;height:19px}.li-tabs .lt span:not(.ti){white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.li-tabs .lt-x{flex:0 0 46px;font-size:18px;background:#fff}.li-ask-del span{font-size:clamp(12px,3.6vw,14px)}@media (max-width:360px){.li-ask button{min-width:52px}.li-ask{gap:6px;padding:0 6px}}
+.gg-wrap{display:grid;gap:10px;margin-top:12px}.gg{padding:12px 14px}.gg-head{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:10px;cursor:pointer}.gg-ic{font-size:24px}.gg-name{display:flex;flex-direction:column;min-width:0}.gg-name b{font-size:16px}.gg-sub{font-size:12.5px}.gg-tot{font-weight:800;font-size:16px}.gg-chev{font-size:18px;transition:transform .2s;color:var(--muted)}.gg.open .gg-chev{transform:rotate(180deg)}.gg-track{margin-top:8px}.gg-list{margin-top:8px;border-top:1px dashed var(--line);padding-top:4px}.gg-list .cprow{grid-template-columns:5em minmax(0,1fr) auto!important}.gg-list .cprow>span:nth-child(1){grid-column:1!important;grid-row:1!important}.gg-list .cprow>span:nth-child(2){grid-column:3!important;grid-row:1!important;justify-self:end}.gg-list .cprow>span:nth-child(3){grid-row:2!important}
 .casa-on{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--basket);color:#fff;padding:2px 8px;border-radius:99px;vertical-align:middle;margin-left:4px}.casa-code{font-size:clamp(20px,6.5vw,28px);font-weight:800;letter-spacing:.08em;text-align:center;padding:12px 8px;border:2px dashed var(--ink);border-radius:14px;background:var(--ticket);color:var(--ticket-ink)}
 .toast{pointer-events:none;position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-weight:700;z-index:60;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
 .notice{font-size:13px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--tag) 30%,var(--surface));margin-top:12px}
@@ -845,8 +846,8 @@ function renderGastos(){
   const off=S.gOff||0;const st=cycleShift(off);const all=Object.entries(S.gastos).filter(([,g])=>S.gAll&&S.gView==='graf'||cycleStartOf(g.date)===st).sort((a,b)=>(b[1].date||'').localeCompare(a[1].date||''));
   const tot=all.reduce((a,[,g])=>a+(+g.amount||0),0);const by={};all.forEach(([,g])=>{by[g.cat]=(by[g.cat]||0)+(+g.amount||0)});
   const fd=d=>new Date(d+'T12:00').toLocaleDateString('es-ES',{day:'numeric',month:'short'}).replace('.','');
-  const graf=S.gView==='graf';
-  const bar=`<div class="li-sticky gbar-wrap" style="top:${Math.max(0,($('.ticket')?.offsetHeight||0)-4)}px;z-index:19"><div class="gbar"><button class="chip" data-gview="fecha" aria-pressed="${!graf}">Por fecha</button><button class="chip" data-gview="graf" aria-pressed="${graf}">Por tipo</button>
+  const graf=false;
+  const bar=`<div class="li-sticky gbar-wrap" style="top:${Math.max(0,($('.ticket')?.offsetHeight||0)-4)}px;z-index:19"><div class="gbar">
     <span class="gnav"><button class="chip" data-goff="${off-1}" aria-label="Mes anterior" ${graf&&S.gAll?'disabled':''}><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 12H5M11 5l-7 7 7 7"/></svg></button><span class="gmes" title="${esc(cycleLabel(st))}">Mes</span><button class="chip" data-goff="${off+1}" aria-label="Mes siguiente" ${off>=0||graf&&S.gAll?'disabled':''}><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15M13 5l7 7-7 7"/></svg></button></span>
     <span class="gtot" title="${S.gAll&&graf?'Total de todos los gastos':esc(cycleLabel(st))}">${money(tot)}</span></div></div>
     ${graf?`<div class="row" style="justify-content:center;margin-top:8px"><button class="chip" data-gall="1" aria-pressed="${!!S.gAll}">Ver todo junto</button></div>`:''}`;
@@ -859,9 +860,19 @@ function renderGastos(){
     $('#gastos').innerHTML=bar+`<div style="text-align:center;margin:12px 0 8px"><b style="font-size:17px">${S.gAll?'Todos los gastos':esc(cycleLabel(st))}</b></div>
       <div class="card"><div class="gb-list" style="margin-top:0">${rows}</div></div>
       ${S.gAll?'':`<div class="row" style="justify-content:center;margin-top:12px"><button class="btn ghost sm" type="button" data-gbudget="1">💰 ${hasB?'Cambiar presupuestos':'Poner presupuestos'}</button></div>`}`;return}
-  $('#gastos').innerHTML=bar+`
-    ${all.length?`<div class="card" style="margin-top:12px">${all.map(([id,g])=>`<div class="line" style="grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px"><button type="button" class="cprow" data-gedit="${esc(id)}"><span class="mono muted" style="font-size:13px">${fd(g.date)}</span><span>${GCAT[g.cat]?.icon||''} ${esc(GCAT[g.cat]?.name||g.cat)}</span><span class="mono" style="font-weight:700">${money(g.amount)}</span>${g.notes?`<span class="muted" style="grid-column:1/-1;font-size:13px">📝 ${esc(g.notes)}</span>`:''}</button><button type="button" class="lidel" data-gdel="${esc(id)}" aria-label="Borrar gasto">🗑</button></div>`).join('')}</div>`
-      :`<div class="empty"><div class="big">Sin gastos en este ciclo</div><p>Apunta abajo lo que gastes en farmacia, tirititrán, gasolina u otros.</p></div>`}`}
+  const bud=S.settings.gBudget||{};const hasB=GCATS.some(c=>bud[c.id]>0);S.gOpen=S.gOpen||{};
+  const groups=GCATS.map(c=>({c,items:all.filter(([,g])=>g.cat===c.id)})).filter(x=>x.items.length||(+bud[x.c.id]>0));
+  const known=new Set(GCATS.map(c=>c.id));const otros=all.filter(([,g])=>!known.has(g.cat));if(otros.length)groups.push({c:{id:'_otros',icon:'🏷️',name:'Otros',c:'#888'},items:otros});
+  groups.sort((x,y)=>(by[y.c.id]||0)-(by[x.c.id]||0));
+  const line=([id,g])=>`<div class="line" style="grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px"><button type="button" class="cprow" data-gedit="${esc(id)}"><span class="mono muted" style="font-size:13px">${fd(g.date)}</span><span class="mono" style="font-weight:700;grid-column:3">${money(g.amount)}</span>${g.notes?`<span class="muted" style="grid-column:1/-1;font-size:13px">📝 ${esc(g.notes)}</span>`:''}</button><button type="button" class="lidel" data-gdel="${esc(id)}" aria-label="Borrar gasto">🗑</button></div>`;
+  const card=({c,items})=>{const v=items.reduce((a,[,g])=>a+(+g.amount||0),0);const B=+bud[c.id]||0;const open=!!S.gOpen[c.id];
+    const info=B>0?`<span class="gg-sub">de ${money(B)} · ${v<=B?`<span class="gb-left ok">quedan ${money(B-v)}</span>`:`<span class="gb-left over">te pasas ${money(v-B)}</span>`}</span>`:`<span class="gg-sub muted">${items.length} ${items.length===1?'gasto':'gastos'}</span>`;
+    return `<div class="card gg${open?' open':''}"><button type="button" class="gg-head" data-gtoggle="${esc(c.id)}" aria-expanded="${open}"><span class="gg-ic">${c.icon}</span><span class="gg-name"><b>${esc(c.name)}</b>${info}</span><span class="mono gg-tot">${money(v)}</span><span class="gg-chev" aria-hidden="true">▾</span></button>
+      ${B>0?`<div class="gb-track gg-track"><div class="fill" style="width:${Math.min(100,v/B*100)}%;background:${v>B?'var(--danger,#D2372E)':c.c}"></div></div>`:''}
+      ${open?(items.length?`<div class="gg-list">${items.map(line).join('')}</div>`:'<p class="muted" style="margin:8px 0 0;font-size:14px">Sin gastos este mes.</p>'):''}</div>`};
+  $('#gastos').innerHTML=bar+(groups.length?`<div class="gg-wrap">${groups.map(card).join('')}</div>`
+      :`<div class="empty"><div class="big">Sin gastos en este ciclo</div><p>Apunta abajo lo que gastes en farmacia, tirititrán, gasolina u otros.</p></div>`)
+    +`<div class="row" style="justify-content:center;margin-top:12px"><button class="btn ghost sm" type="button" data-gbudget="1">💰 ${hasB?'Cambiar presupuestos':'Poner presupuestos'}</button></div>`}
 function openBudget(){const bud=S.settings.gBudget||{};const fmt=v=>v>0?(+v).toFixed(2).replace('.',','):'';
   $('#sheet-root').innerHTML=`<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-label="Presupuestos"><h2>Presupuesto de cada mes</h2>
     <p class="muted" style="margin:-4px 0 12px;font-size:14px">Lo máximo que quieres gastar en cada apartado por mes (desde el día ${S.settings.cycleDay||27}). Déjalo vacío si no quieres límite.</p>
@@ -917,6 +928,8 @@ function renderCompras(){
 }
 function cestaCompleta(){const rows=[...document.querySelectorAll('.li.on')].filter(r=>r.querySelector('[data-lpick]'));if(!rows.length)return false;return [...rows].every(r=>r.classList.contains('got'))}
 (function(){const r=renderLista;renderLista=function(){const o=r.apply(this,arguments);$('#li-top')?.classList.toggle('done',cestaCompleta());return o}})();
+function fillTbRow(cur){const row=$('#tb-row'),bar=$('#tabbar');if(!row||!bar)return;if(cur==='frecuentes'){row.innerHTML='';return}
+  row.innerHTML=`<div class="li-tabs static" role="navigation" aria-label="Pestañas">${[...bar.querySelectorAll('[data-tab]')].filter(b=>b.dataset.tab!==cur).map(b=>`<button type="button" class="lt" data-tab="${b.dataset.tab}">${b.querySelector('.ti')?.outerHTML||''}<span>${esc([...b.childNodes].filter(n=>n.nodeType===3).map(n=>n.textContent).join('').trim())}</span></button>`).join('')}</div>`}
 function celebrar(){S.partyUntil=Date.now()+2600;const c=$('#li-top');if(c){c.classList.remove('party');void c.offsetWidth;c.classList.add('party')}
   setTimeout(()=>{$('#li-top')?.classList.remove('party')},2600);try{navigator.vibrate&&navigator.vibrate([40,60,40,60,120])}catch(_){}
   const cv=document.createElement('canvas');cv.className='confeti';document.body.appendChild(cv);const dpr=Math.min(devicePixelRatio||1,2);
@@ -988,7 +1001,7 @@ async function upsertProduct({name,dept,superId,price,manual=true}){
 }
 function switchTab(t){S.tab=t;
   document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
-  $('#li-search').hidden=t!=='frecuentes';document.documentElement.classList.toggle('on-art',t==='frecuentes');document.querySelectorAll('.li-tabs').forEach(n=>n.remove());const sec=t==='frecuentes'?'cesta':t;document.querySelectorAll('.tab').forEach(s=>s.hidden=s.id!=='tab-'+sec);window.scrollTo({top:0});render()}
+  $('#li-search').hidden=t!=='frecuentes';document.documentElement.classList.toggle('on-art',t==='frecuentes');document.querySelectorAll('.li-tabs').forEach(n=>n.remove());fillTbRow(t);const sec=t==='frecuentes'?'cesta':t;document.querySelectorAll('.tab').forEach(s=>s.hidden=s.id!=='tab-'+sec);window.scrollTo({top:0});render()}
 
 document.addEventListener('click',async e=>{
   const t=e.target.closest('button,[data-goto]');if(!t)return;
@@ -1015,6 +1028,7 @@ document.addEventListener('click',async e=>{
   if(t.id==='li-clear'){if(t.dataset.armed){S.cart={};S.picked={};S.keep={};store.saveCart();clearFalta()}else{t.dataset.armed=1;t.textContent='¿Seguro?';t.classList.add('on');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='Desmarcar';t.classList.remove('on')}},4000)}return}
   if(d.inc){setQty(d.inc,(S.cart[d.inc]||0)+1);if(d.fromcmp)openCompare(d.fromcmp);return}
   if(d.dec){setQty(d.dec,(S.cart[d.dec]||0)-1);return}
+  if(d.gtoggle!==undefined){S.gOpen=S.gOpen||{};S.gOpen[d.gtoggle]=!S.gOpen[d.gtoggle];renderGastos();return}
   if(d.tab){switchTab(d.tab);return}
   if(d.addsheet||d.goto==='anadir'){openListaEdit(null,null,{name:'',dept:(S.liFilter&&DEPT[S.liFilter])?S.liFilter:'alimentacion'});return}
   if(d.goto){switchTab(d.goto);return}
@@ -1528,7 +1542,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='91';
+const APP_BUILD='93';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
