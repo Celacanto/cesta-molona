@@ -869,7 +869,7 @@ function renderGastos(){
   const line=([id,g])=>`<div class="line" style="grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px"><button type="button" class="cprow" data-gedit="${esc(id)}"><span class="mono muted" style="font-size:13px">${fd(g.date)}</span><span class="mono" style="font-weight:700;grid-column:3">${money(g.amount)}</span>${g.notes?`<span class="muted" style="grid-column:1/-1;font-size:13px">📝 ${esc(g.notes)}</span>`:''}</button><button type="button" class="lidel" data-gdel="${esc(id)}" aria-label="Borrar gasto">🗑</button></div>`;
   const fline=([id,p])=>`<div class="line"><div class="cprow" style="cursor:default"><span class="mono muted" style="font-size:13px">${fd(pDate(p))}</span><span class="mono" style="font-weight:700">${money(p.total)}</span><span class="muted" style="font-size:13px">${p.super?superName(p.super):'Ticket'}</span></div></div>`;
   const card=({c,items,food:isFood})=>{const v=isFood?foodTot:items.reduce((a,[,g])=>a+(+g.amount||0),0);const B=+bud[c.id]||0;const open=!!S.gOpen[c.id];
-    const info=B>0?`<span class="gg-sub">de ${money(B)} · ${v<=B?`<span class="gb-left ok">quedan ${money(B-v)}</span>`:`<span class="gb-left over">te pasas ${money(v-B)}</span>`}</span>`:`<span class="gg-sub muted">${isFood?`${items.length} ${items.length===1?'ticket':'tickets'} · de la pestaña Tickets`:`${items.length} ${items.length===1?'gasto':'gastos'}`}</span>`;
+    const info=B>0?`<span class="gg-sub">de ${money(B)}</span><span class="gg-sub">${v<=B?`<span class="gb-left ok">Quedan ${money(B-v)}</span>`:`<span class="gb-left over">Te pasas ${money(v-B)}</span>`}</span>`:`<span class="gg-sub muted">${isFood?`${items.length} ${items.length===1?'ticket':'tickets'} · de la pestaña Tickets`:`${items.length} ${items.length===1?'gasto':'gastos'}`}</span>`;
     return `<div class="card gg${open?' open':''}"><button type="button" class="gg-head" data-gtoggle="${esc(c.id)}" aria-expanded="${open}"><span class="gg-ic">${c.icon}</span><span class="gg-name"><b>${esc(c.name)}</b>${info}</span><span class="mono gg-tot">${money(v)}</span><span class="gg-chev" aria-hidden="true">▾</span></button>
       ${B>0?`<div class="gb-track gg-track"><div class="fill" style="width:${Math.min(100,v/B*100)}%;background:${v>B?'var(--danger,#D2372E)':c.c}"></div></div>`:''}
       ${open?(items.length?`<div class="gg-list">${items.map(isFood?fline:line).join('')}</div>`:'<p class="muted" style="margin:8px 0 0;font-size:14px">Sin gastos este mes.</p>'):''}</div>`};
@@ -1545,7 +1545,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='94';
+const APP_BUILD='95';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
