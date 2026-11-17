@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#1B1446">
-<meta name="description" content="Mi chistera de juegos de magia: chuletas, secretos y mi show.">
+<meta name="description" content="Mi chistera de juegos de cartomagia.">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -92,6 +92,25 @@ header.top{position:sticky;top:0;z-index:20;margin:0 -16px;padding:14px 16px 12p
 .pickrow .ck{flex:none;width:26px;height:26px;border-radius:8px;display:grid;place-items:center;border:2px solid var(--violet2)}
 .pickrow[aria-pressed="true"] .ck{background:linear-gradient(135deg,var(--violet),var(--blue));border-color:transparent}
 .pickrow[aria-pressed="true"] .ck::after{content:"✓";font-weight:700}
+.flab{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;margin-bottom:5px}
+.flab label{margin:0}
+.mtools{display:flex;gap:6px}
+.mbtn{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:19px;background:rgba(255,255,255,.08);border:1px solid var(--line)}
+.mbtn:active{transform:scale(.92)}
+.mgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:8px;margin-top:10px}
+.mitem{position:relative;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.06);border:1px solid var(--line);min-height:70px;display:grid;place-items:center}
+.mitem img,.mitem video{display:block;width:100%;height:130px;object-fit:cover;background:#000}
+.mitem.aud{grid-column:1/-1;min-height:0;padding:8px}
+.mitem audio{width:100%}
+.mdel{position:absolute;top:6px;right:6px;width:28px;height:28px;border-radius:50%;background:rgba(14,11,43,.85);color:#fff;font-size:13px;z-index:2}
+.recbar{display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:rgba(255,93,122,.15);border:1px solid rgba(255,93,122,.4)}
+.recbar .dot{width:12px;height:12px;border-radius:50%;background:var(--hot);animation:blink 1s infinite}
+.recbar .btn{margin-left:auto}
+@keyframes blink{50%{opacity:.25}}
+.imgview{position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.92);display:grid;place-items:center;padding:16px}
+.imgview img{max-width:100%;max-height:100%;border-radius:12px}
+.perform .mitem img,.perform .mitem video{height:200px}
+#ef .tiporow input{padding:11px 13px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid var(--line);font-size:16px}
 .rhead{display:flex;align-items:center;gap:10px;margin-top:14px}
 .rhead h2{flex:1;font-family:var(--f-magic);font-size:22px;margin:0;line-height:1.2}
 .tag{font-size:12px;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--ink);white-space:nowrap}
@@ -252,7 +271,7 @@ form.stack{display:grid;gap:14px;margin-top:8px}
       <button class="iconbtn" id="open-settings" aria-label="Ajustes y copia de seguridad">⚙️</button>
     </div>
     <div id="hdr-juegos">
-      <div class="search"><span aria-hidden="true">🔍</span><input id="q" type="search" placeholder="Buscar juego, material, palabra…" autocomplete="off"><button id="azar" aria-label="Elegir un juego al azar" title="Elegir uno al azar" style="font-size:20px;padding:6px 2px">🎲</button></div>
+      <div class="search"><span aria-hidden="true">🔍</span><input id="q" type="search" placeholder="Buscar un juego…" autocomplete="off"><button id="azar" aria-label="Elegir un juego al azar" title="Elegir uno al azar" style="font-size:20px;padding:6px 2px">🎲</button></div>
       <div class="chips" id="cat-chips" role="group" aria-label="Filtrar por tipo de juego"></div>
     </div>
   </header>
@@ -284,8 +303,8 @@ form.stack{display:grid;gap:14px;margin-top:8px}
 
 <script>
 /* ================= Modelo de datos =================
-   juegos/{id}    {nombre, cat, efecto, material, prep, pasos, secreto, guion, notas, video,
-                   dif:1-3, nivel:'aprendiendo'|'listo'|'estrella', dur(min), publico:[...], fav, veces, usado, creado}
+   juegos/{id}    {nombre, cat, efecto, prep, fav, creado, media:{nombre:[mid], efecto:[mid], prep:[mid]}}
+   (las fotos, vídeos y audios se guardan en este dispositivo, en IndexedDB 'magia-media')
    rutinas/{id}   {nombre, ids:[idJuego...], creado}
    settings/tipos {list:[{id,name,icon}]}   ← el clasificador de tipos, editable
 */
@@ -316,22 +335,12 @@ const PUB=Object.fromEntries(PUBLICO.map(p=>[p.id,p]));
 const SUITS=[['♠',''],['♥','r'],['♣',''],['♦','r']];
 
 const EJEMPLOS=[
-  {nombre:'La carta clave',cat:'encontrar',dif:1,nivel:'listo',dur:3,publico:['ninos','adultos','cerca'],
+  {nombre:'La carta clave',cat:'encontrar',fav:true,
    efecto:'Un espectador elige una carta, la pierde en la baraja… y yo la encuentro.',
-   material:'Una baraja normal.',
-   prep:'Antes de empezar, mira de reojo la carta de abajo del todo y recuérdala (es la "carta clave").',
-   pasos:'Mezcla la baraja sin mover la carta de abajo.\nPide que corten la baraja en dos montones.\nQue miren la carta de arriba del montón de arriba y la recuerden.\nQue la dejen encima del otro montón.\nQue pongan el resto encima (tu carta clave queda justo encima de la suya).\nExtiende las cartas boca arriba y busca tu carta clave: la suya es la de su derecha.',
-   secreto:'Tu carta clave acaba justo encima de la carta elegida. Solo tienes que buscarla y coger la siguiente.',
-   guion:'"Esta baraja tiene memoria… ¿quieres ponerla a prueba?" — Al final, haz como que lees su mente antes de sacar la carta.',
-   notas:'Si cortan varias veces seguidas (cortes simples) sigue funcionando.',video:'',fav:true},
-  {nombre:'Las 21 cartas',cat:'auto',dif:1,nivel:'aprendiendo',dur:5,publico:['ninos','grupo'],
-   efecto:'Alguien piensa una carta entre 21 y, tras repartirlas tres veces, aparece exactamente en el centro.',
-   material:'21 cartas cualesquiera.',
-   prep:'Separa 21 cartas de la baraja.',
-   pasos:'Reparte las 21 cartas boca arriba en 3 columnas de 7.\nPide que piensen una carta y te digan en qué columna está.\nJunta las columnas dejando la suya EN MEDIO.\nRepite el reparto y la pregunta dos veces más (3 en total).\nCuenta 10 cartas: la número 11 es la suya.',
-   secreto:'Al poner siempre su columna en medio, la carta va bajando hacia el centro. Tras 3 repartos siempre queda la 11.ª.',
-   guion:'"Las cartas se mueven solas hacia el corazón de la baraja… la tuya también."',
-   notas:'Se puede revelar deletreando una frase mágica de 11 letras: A-B-R-A-C-A-D-A-B-R-A.',video:'',fav:false},
+   prep:'Mira de reojo la carta de abajo del todo y recuérdala (la "carta clave"). Al juntar los montones queda justo encima de la suya.'},
+  {nombre:'Las 21 cartas',cat:'auto',fav:false,
+   efecto:'Alguien piensa una carta entre 21 y, tras repartirlas tres veces en columnas, aparece justo en el centro.',
+   prep:'Separa 21 cartas. Reparte en 3 columnas, pon siempre su columna en medio; tras 3 repartos es la carta 11.'},
 ];
 
 if(/netlify\.app$/.test(location.hostname))document.documentElement.classList.add('nlb');
@@ -343,7 +352,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
 const slug=s=>norm(s).replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,40)||('t'+Date.now().toString(36));
 const newId=p=>(p||'j')+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-const today=()=>new Date().toISOString().slice(0,10);
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')};
 const wands=n=>'🪄'.repeat(Math.max(1,Math.min(3,+n||1)));
 const tipoOf=id=>S.tipos.find(t=>t.id===id)||{id:'',name:'Sin tipo',icon:'🃏'};
 const hash=s=>[...String(s)].reduce((a,c)=>a+c.charCodeAt(0),0);
@@ -377,33 +386,31 @@ async function boot(){
 /* ================= Pintar ================= */
 const list=()=>Object.entries(S.juegos).map(([id,j])=>({id,...j}));
 function matches(j){
-  if(S.cat&&j.cat!==S.cat)return false;
-  if(S.lv==='fav'&&!j.fav)return false;
-  if(S.lv&&S.lv!=='fav'&&j.nivel!==S.lv)return false;
-  if(S.q){const hay=norm([j.nombre,j.efecto,j.material,j.notas,j.guion,tipoOf(j.cat).name].join(' '));
+  if(S.cat==='__fav'){if(!j.fav)return false}else if(S.cat&&j.cat!==S.cat)return false;
+  if(S.q){const hay=norm([j.nombre,j.efecto,j.prep,tipoOf(j.cat).name].join(' '));
     return norm(S.q).split(/\s+/).every(t=>hay.includes(t))}
   return true}
 function render(){
-  const all=list();const ready=all.filter(j=>j.nivel!=='aprendiendo').length;
-  $('#sub').textContent=all.length?`${all.length} ${all.length===1?'juego':'juegos'} · ${ready} listos para actuar`:'Mis juegos de cartomagia';
+  const all=list();
+  $('#sub').textContent=all.length?`${all.length} ${all.length===1?'juego':'juegos'} en la chistera`:'Mis juegos de cartomagia';
   const nr=Object.keys(S.rutinas).length,rb=$('#rut-badge');rb.hidden=!nr;rb.textContent=nr;
   $('#fab').setAttribute('aria-label',S.tab==='juegos'?'Añadir un juego':S.rut?'Añadir juegos a la rutina':'Nueva rutina');
   if(S.tab==='juegos'){renderChips(all);renderList(all)}
   if(S.tab==='rutinas')renderRutinas();
 }
 function renderChips(all){
-  const count=id=>all.filter(j=>j.cat===id).length;
+  const count=id=>all.filter(j=>j.cat===id).length,nf=all.filter(j=>j.fav).length;
   $('#cat-chips').innerHTML=`<button class="chip" data-cat="" aria-pressed="${!S.cat}">🃏 Todos</button>`+
+    (nf?`<button class="chip" data-cat="__fav" aria-pressed="${S.cat==='__fav'}">⭐ Favoritos <span class="muted">${nf}</span></button>`:'')+
     S.tipos.map(t=>`<button class="chip" data-cat="${esc(t.id)}" aria-pressed="${S.cat===t.id}">${esc(t.icon)} ${esc(t.name)}${count(t.id)?` <span class="muted">${count(t.id)}</span>`:''}</button>`).join('')+
     `<button class="chip" id="tipos-open" style="border-style:dashed">🏷️ Tipos…</button>`;
-  $('#lv-chips').innerHTML=[['','Cualquier nivel'],['fav','⭐ Favoritos'],...NIVELES.map(n=>[n.id,n.icon+' '+n.name])]
-    .map(([id,t])=>`<button class="chip" data-lv="${id}" aria-pressed="${S.lv===id}">${t}</button>`).join('');
+  $('#lv-chips').hidden=true;
 }
-function card(j){const c=tipoOf(j.cat),n=NIV[j.nivel]||NIV.aprendiendo,su=SUITS[hash(j.id)%4];
+function card(j){const c=tipoOf(j.cat),su=SUITS[hash(j.id)%4],nm=mediaCount(j);
   return `<button class="trick" data-open="${j.id}">
     <span class="emo">${esc(c.icon)}</span>
     <span class="body"><h3>${esc(j.nombre||'Sin nombre')}</h3>${j.efecto?`<p>${esc(j.efecto)}</p>`:''}
-      <span class="meta"><span class="tag">${esc(c.name)}</span><span class="tag lv-${j.nivel||'aprendiendo'}">${n.icon} ${n.name}</span><span class="tag wands" title="Dificultad">${wands(j.dif)}</span>${j.dur?`<span class="tag">⏱ ${esc(j.dur)} min</span>`:''}</span></span>
+      <span class="meta"><span class="tag">${esc(c.name)}</span>${nm?`<span class="tag">📎 ${nm}</span>`:''}</span></span>
     ${j.fav?'<span class="fav" aria-label="Favorito">⭐</span>':''}<span class="suit ${su[1]}" aria-hidden="true">${su[0]}</span></button>`}
 function renderList(all){
   $('#lv-chips').hidden=!all.length;
@@ -418,21 +425,14 @@ function renderList(all){
 
 /* ---------- La chuleta de un juego ---------- */
 function chuleta(j,big){
-  const c=tipoOf(j.cat),n=NIV[j.nivel]||NIV.aprendiendo;
-  const pasos=String(j.pasos||'').split('\n').map(s=>s.replace(/^\s*(\d+[\.\)-]|[-•*])\s*/,'').trim()).filter(Boolean);
-  const sec=(ic,t,v)=>v?`<div class="sec"><h4>${ic} ${t}</h4><div class="txt">${esc(v)}</div></div>`:'';
+  const c=tipoOf(j.cat);
+  const sec=(ic,t,k)=>{const v=j[k],m=(j.media||{})[k]||[];return (v||m.length)?`<div class="sec"><h4>${ic} ${t}</h4>${v?`<div class="txt">${esc(v)}</div>`:''}${mediaHtml(m)}</div>`:''};
+  const mn=(j.media||{}).nombre||[];
   return `${big?`<h1>${esc(j.nombre)}</h1>`:`<h2>${esc(j.nombre||'Sin nombre')}</h2>`}
-   <div class="row" style="margin-top:6px"><span class="tag">${esc(c.icon)} ${esc(c.name)}</span><span class="tag lv-${j.nivel||'aprendiendo'}">${n.icon} ${n.name}</span><span class="tag wands">${wands(j.dif)}</span>
-     ${j.dur?`<span class="tag">⏱ ${esc(j.dur)} min</span>`:''}${(j.publico||[]).map(p=>PUB[p]?`<span class="tag">${PUB[p].icon} ${PUB[p].name}</span>`:'').join('')}
-     ${j.veces?`<span class="tag">🎭 hecho ${j.veces} ${j.veces==1?'vez':'veces'}</span>`:''}</div>
-   ${sec('✨','Lo que ve el público',j.efecto)}
-   ${sec('🎒','Material',j.material)}
-   ${sec('🧪','Preparación previa',j.prep)}
-   ${pasos.length?`<div class="sec"><h4>🪄 Paso a paso</h4><ol class="steps">${pasos.map(p=>`<li>${esc(p)}</li>`).join('')}</ol></div>`:''}
-   ${j.secreto?`<div class="sec secret"><h4>🔒 El secreto</h4><div class="txt hide" data-secret>${esc(j.secreto)}</div><div class="reveal"><button class="btn gold sm" data-reveal>👁 Revelar secreto</button></div></div>`:''}
-   ${sec('🎤','Lo que digo',j.guion)}
-   ${sec('📝','Notas',j.notas)}
-   ${j.video?`<div class="sec"><h4>▶️ Vídeo</h4><a class="vlink" href="${esc(/^https?:\/\//.test(j.video)?j.video:'https://'+j.video)}" target="_blank" rel="noopener">${esc(j.video)}</a></div>`:''}`}
+   <div class="row" style="margin-top:6px"><span class="tag">${esc(c.icon)} ${esc(c.name)}</span></div>
+   ${mn.length?`<div class="sec">${mediaHtml(mn)}</div>`:''}
+   ${sec('✨','Efecto','efecto')}
+   ${sec('🧪','Preparación','prep')}`}
 function openDetail(id){const j=S.juegos[id];if(!j)return;
   const enR=Object.values(S.rutinas).filter(r=>(r.ids||[]).includes(id)).map(r=>r.nombre);
   sheet(`<div class="grab"></div>${chuleta(j)}
@@ -441,18 +441,16 @@ function openDetail(id){const j=S.juegos[id];if(!j)return;
      <button class="btn" data-act="edit">✏️ Editar</button>
      <button class="btn ghost" data-act="fav">${j.fav?'⭐ Quitar de favoritos':'☆ Favorito'}</button>
      <button class="btn ghost" data-act="rut">🎪 Rutinas…</button>
-     <button class="btn ghost" data-act="done">🎭 ¡Lo he hecho!</button>
      <button class="btn danger" data-act="del">🗑 Borrar</button>
    </div>`,
   async e=>{const a=e.target.closest('[data-act]');if(!a)return;const act=a.dataset.act;
     if(act==='edit')openEdit(id);
     if(act==='fav'){await store.saveJuego(id,{...j,fav:!j.fav});openDetail(id)}
     if(act==='rut')openRutPicker(id);
-    if(act==='done'){await store.saveJuego(id,{...j,veces:(+j.veces||0)+1,usado:today()});toast('¡Aplausos! 👏');sparkles(a);openDetail(id)}
-    if(act==='del'){if(a.dataset.sure){await store.deleteJuego(id);closeSheet();toast('Juego borrado')}else{a.dataset.sure=1;a.textContent='¿Seguro? Pulsa otra vez'}}
+    if(act==='del'){if(a.dataset.sure){for(const ids of Object.values(j.media||{}))ids.forEach(m=>media.del(m));await store.deleteJuego(id);closeSheet();toast('Juego borrado')}else{a.dataset.sure=1;a.textContent='¿Seguro? Pulsa otra vez'}}
   });
+  hydrateMedia($('#sheet-root'));
 }
-document.addEventListener('click',e=>{const r=e.target.closest('[data-reveal]');if(!r)return;const box=r.closest('.secret');box.querySelector('[data-secret]').classList.remove('hide');r.parentNode.remove()});
 
 /* ---------- En qué rutinas está un juego ---------- */
 function openRutPicker(jid){const rs=Object.entries(S.rutinas).sort((a,b)=>(a[1].nombre||'').localeCompare(b[1].nombre||'','es'));
@@ -471,46 +469,59 @@ function openRutPicker(jid){const rs=Object.entries(S.rutinas).sort((a,b)=>(a[1]
 }
 
 /* ---------- Añadir / editar juego ---------- */
-function openEdit(id){const isNew=!id;const j=isNew?{cat:S.cat||(S.tipos[0]||{}).id||'',dif:1,nivel:'aprendiendo',publico:[]}:{...S.juegos[id]};
-  const segs=(name,items,cur,multi)=>`<div class="seg" data-seg="${name}" data-multi="${multi?1:''}">${items.map(it=>`<button type="button" data-v="${it.id}" aria-pressed="${multi?(cur||[]).includes(it.id):cur===it.id}">${it.icon} ${it.name}</button>`).join('')}</div>`;
+function openEdit(id){const isNew=!id;const j=isNew?{cat:S.cat&&S.cat!=='__fav'?S.cat:(S.tipos[0]||{}).id||''}:{...S.juegos[id]};
+  const M={nombre:[...((j.media||{}).nombre||[])],efecto:[...((j.media||{}).efecto||[])],prep:[...((j.media||{}).prep||[])]};
+  const added=[],removed=[];
+  const tools=k=>`<div class="mtools"><button type="button" class="mbtn" data-cam="${k}" aria-label="Hacer foto o vídeo">📷</button><button type="button" class="mbtn" data-mic="${k}" aria-label="Grabar audio">🎤</button><button type="button" class="mbtn" data-file="${k}" aria-label="Adjuntar foto, vídeo o audio">📎</button></div>`;
+  const mbox=k=>`<div class="mlist" data-mlist="${k}">${mediaHtml(M[k],true)}</div>`;
   sheet(`<div class="grab"></div><h2>${isNew?'Nuevo juego':'Editar juego'}</h2>
   <form class="stack" id="ef" autocomplete="off">
-    <div class="field"><label for="f-nombre">Nombre del juego</label><input id="f-nombre" required value="${esc(j.nombre)}" placeholder="Ej. La carta que sube"></div>
+    <div class="field"><div class="flab"><label for="f-nombre">Nombre del juego</label>${tools('nombre')}</div><input id="f-nombre" required value="${esc(j.nombre)}" placeholder="Ej. La carta que sube">${mbox('nombre')}</div>
     <div class="field"><label for="f-cat">Tipo de juego</label><select id="f-cat">${S.tipos.map(t=>`<option value="${esc(t.id)}" ${j.cat===t.id?'selected':''}>${esc(t.icon)} ${esc(t.name)}</option>`).join('')}
       ${j.cat&&!S.tipos.some(t=>t.id===j.cat)?'<option value="" selected>🃏 Sin tipo</option>':''}<option value="__new">➕ Crear un tipo nuevo…</option></select>
-      <div class="tiporow" id="f-newtipo" hidden><input class="emo-in field" id="f-nt-ico" value="🃏" maxlength="4" aria-label="Emoji del tipo" style="border-radius:14px;background:rgba(255,255,255,.07);border:1px solid var(--line)"><input id="f-nt-name" class="nm-in" placeholder="Nombre del tipo nuevo" style="padding:11px 13px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid var(--line);font-size:16px"></div></div>
-    <div class="field"><label for="f-efecto">✨ Lo que ve el público</label><textarea id="f-efecto" rows="2" placeholder="Qué pasa, contado como lo vería un espectador">${esc(j.efecto)}</textarea></div>
-    <div class="field"><label for="f-material">🎒 Material</label><input id="f-material" value="${esc(j.material)}" placeholder="Ej. baraja normal, baraja preparada, carta duplicada…"></div>
-    <div class="field"><label for="f-prep">🧪 Preparación previa</label><textarea id="f-prep" rows="2" placeholder="Orden de la baraja, cartas colocadas antes… (opcional)">${esc(j.prep)}</textarea></div>
-    <div class="field"><label for="f-pasos">🪄 Paso a paso</label><textarea id="f-pasos" rows="5" placeholder="Un paso en cada línea">${esc(j.pasos)}</textarea><div class="hint">Escribe cada paso en una línea: se numeran solos.</div></div>
-    <div class="field"><label for="f-secreto">🔒 El secreto</label><textarea id="f-secreto" rows="3" placeholder="Cómo funciona de verdad. Sale oculto hasta que lo revelas.">${esc(j.secreto)}</textarea></div>
-    <div class="field"><label for="f-guion">🎤 Lo que digo (el guion)</label><textarea id="f-guion" rows="3" placeholder="Frases, chistes, la historia que cuentas…">${esc(j.guion)}</textarea></div>
-    <div class="field"><label>Dificultad</label>${segs('dif',[{id:'1',icon:'🪄',name:'Fácil'},{id:'2',icon:'🪄🪄',name:'Media'},{id:'3',icon:'🪄🪄🪄',name:'Difícil'}],String(j.dif||1))}</div>
-    <div class="field"><label>¿Cómo lo llevas?</label>${segs('nivel',NIVELES,j.nivel)}</div>
-    <div class="field"><label>¿Para quién va bien?</label>${segs('publico',PUBLICO,j.publico,true)}</div>
-    <div class="pair">
-      <div class="field"><label for="f-dur">⏱ Duración (min)</label><input id="f-dur" type="number" inputmode="numeric" min="0" step="1" value="${esc(j.dur)}" placeholder="3"></div>
-      <div class="field"><label for="f-video">▶️ Enlace a vídeo</label><input id="f-video" type="url" inputmode="url" value="${esc(j.video)}" placeholder="youtube.com/…"></div>
-    </div>
-    <div class="field"><label for="f-notas">📝 Notas</label><textarea id="f-notas" rows="2" placeholder="Trucos para que salga mejor, errores a evitar…">${esc(j.notas)}</textarea></div>
+      <div class="tiporow" id="f-newtipo" hidden><input class="emo-in" id="f-nt-ico" value="🃏" maxlength="4" aria-label="Emoji del tipo"><input id="f-nt-name" class="nm-in" placeholder="Nombre del tipo nuevo"></div></div>
+    <div class="field"><div class="flab"><label for="f-efecto">✨ Efecto</label>${tools('efecto')}</div><textarea id="f-efecto" rows="3" placeholder="Qué pasa, contado como lo vería un espectador">${esc(j.efecto)}</textarea>${mbox('efecto')}</div>
+    <div class="field"><div class="flab"><label for="f-prep">🧪 Preparación</label>${tools('prep')}</div><textarea id="f-prep" rows="3" placeholder="Lo que hay que dejar listo antes">${esc(j.prep)}</textarea>${mbox('prep')}</div>
+    <div class="recbar" id="recbar" hidden><span class="dot"></span><span id="rec-t">0:00</span> Grabando…<button type="button" class="btn sm" id="rec-stop">⏹ Parar</button></div>
     <button class="btn wide" type="submit">${isNew?'🎩 Guardar en la chistera':'💾 Guardar cambios'}</button>
     <button class="btn ghost wide" type="button" data-cancel>Cancelar</button>
+    <input type="file" id="f-cam" accept="image/*,video/*" capture="environment" hidden>
+    <input type="file" id="f-micfile" accept="audio/*" capture hidden>
+    <input type="file" id="f-any" accept="image/*,video/*,audio/*" multiple hidden>
   </form>`,
-  e=>{const b=e.target.closest('.seg button');if(b){const sg=b.parentNode;if(sg.dataset.multi)b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');else sg.querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b))}
-    if(e.target.closest('[data-cancel]'))isNew?closeSheet():openDetail(id)});
+  async e=>{const t=e.target;
+    if(t.closest('[data-cancel]')){added.forEach(m=>media.del(m));isNew?closeSheet():openDetail(id);return}
+    const cam=t.closest('[data-cam]');if(cam){target=cam.dataset.cam;$('#f-cam').click();return}
+    const fl=t.closest('[data-file]');if(fl){target=fl.dataset.file;$('#f-any').click();return}
+    const mic=t.closest('[data-mic]');if(mic){target=mic.dataset.mic;startRec();return}
+    const rm=t.closest('[data-mdel]');if(rm){const mid=rm.dataset.mdel;for(const k in M)M[k]=M[k].filter(x=>x!==mid);removed.push(mid);redraw();return}
+  });
+  let target='efecto',rec=null,chunks=[],tick=null;
+  function redraw(){for(const k in M){const el=document.querySelector(`[data-mlist="${k}"]`);el.innerHTML=mediaHtml(M[k],true)}hydrateMedia($('#ef'))}
+  async function addFiles(files){for(const f of files){if(!/^(image|video|audio)\//.test(f.type)){toast('Solo fotos, vídeos o audios');continue}
+      try{const mid=await media.put(f);M[target].push(mid);added.push(mid)}catch(err){console.warn(err);toast('No se pudo guardar el archivo')}}redraw()}
+  ['f-cam','f-micfile','f-any'].forEach(x=>$('#'+x).addEventListener('change',e=>{addFiles([...e.target.files]);e.target.value=''}));
+  async function startRec(){if(rec){toast('Ya estás grabando');return}
+    let stream;try{stream=await navigator.mediaDevices.getUserMedia({audio:true})}catch(err){$('#f-micfile').click();return}
+    chunks=[];rec=new MediaRecorder(stream);rec.ondataavailable=e=>e.data.size&&chunks.push(e.data);
+    rec.onstop=async()=>{stream.getTracks().forEach(t=>t.stop());clearInterval(tick);$('#recbar').hidden=true;const type=rec.mimeType||'audio/webm';rec=null;
+      const blob=new Blob(chunks,{type});if(blob.size){const f=new File([blob],'audio.'+(type.includes('mp4')?'m4a':'webm'),{type});await addFiles([f]);toast('Audio guardado 🎤')}};
+    rec.start();const t0=Date.now();$('#recbar').hidden=false;$('#rec-t').textContent='0:00';
+    tick=setInterval(()=>{const s=Math.floor((Date.now()-t0)/1000);$('#rec-t').textContent=Math.floor(s/60)+':'+String(s%60).padStart(2,'0')},500)}
+  $('#rec-stop').addEventListener('click',()=>rec&&rec.stop());
+  hydrateMedia($('#ef'));
   $('#f-cat').addEventListener('change',e=>{const on=e.target.value==='__new';$('#f-newtipo').hidden=!on;if(on)$('#f-nt-name').focus()});
-  $('#ef').addEventListener('submit',async ev=>{ev.preventDefault();
-    const v=k=>$('#f-'+k).value.trim();const segv=n=>[...document.querySelectorAll(`[data-seg="${n}"] button[aria-pressed="true"]`)].map(b=>b.dataset.v);
+  $('#ef').addEventListener('submit',async ev=>{ev.preventDefault();if(rec){toast('Para la grabación primero');return}
+    const v=k=>$('#f-'+k).value.trim();
     let cat=v('cat');
     if(cat==='__new'){const nm=$('#f-nt-name').value.trim();if(!nm){toast('Ponle nombre al tipo nuevo');$('#f-nt-name').focus();return}
       const ex=S.tipos.find(t=>norm(t.name)===norm(nm));if(ex)cat=ex.id;else{cat=slug(nm);while(S.tipos.some(t=>t.id===cat))cat+='-2';S.tipos.push({id:cat,name:nm,icon:$('#f-nt-ico').value.trim()||'🃏'});store.saveTipos()}}
-    const out={...j,nombre:v('nombre'),cat,efecto:v('efecto'),material:v('material'),prep:v('prep'),pasos:v('pasos'),secreto:v('secreto'),guion:v('guion'),
-      notas:v('notas'),video:v('video'),dur:v('dur')?Math.max(0,Math.round(+v('dur'))):'',dif:+(segv('dif')[0]||1),nivel:segv('nivel')[0]||'aprendiendo',publico:segv('publico')};
-    if(isNew){out.creado=today();out.veces=0;out.fav=false}
+    const out={...j,nombre:v('nombre'),cat,efecto:v('efecto'),prep:v('prep'),media:M};
+    if(isNew){out.creado=today();out.fav=false}
+    removed.forEach(m=>media.del(m));
     const nid=id||newId();await store.saveJuego(nid,out);toast(isNew?'¡Juego guardado! 🎩':'Cambios guardados');if(isNew)sparkles($('#fab'));openDetail(nid)});
   if(isNew)setTimeout(()=>$('#f-nombre').focus(),300);
 }
-
 /* ---------- Clasificador: tipos de juego ---------- */
 function openTipos(){const cnt=id=>list().filter(j=>j.cat===id).length;
   const rows=S.tipos.map((t,i)=>`<div class="tiporow" data-i="${i}">
@@ -537,6 +548,28 @@ function openTipos(){const cnt=id=>list().filter(j=>j.cat===id).length;
   });
 }
 
+/* ---------- Fotos, vídeos y audios (guardados en este móvil) ---------- */
+const media={_db:null,
+  open(){if(this._db)return this._db;return this._db=new Promise((res,rej)=>{const r=indexedDB.open('magia-media',1);r.onupgradeneeded=()=>r.result.createObjectStore('m');r.onsuccess=()=>res(r.result);r.onerror=()=>rej(r.error)})},
+  async tx(mode,fn){const d=await this.open();return new Promise((res,rej)=>{const t=d.transaction('m',mode);const out=fn(t.objectStore('m'));t.oncomplete=()=>res(out&&out.result);t.onerror=()=>rej(t.error)})},
+  async put(file){const id='m'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);await this.tx('readwrite',s=>s.put({blob:file,type:file.type,name:file.name||''},id));return id},
+  async get(id){return this.tx('readonly',s=>s.get(id))},
+  async del(id){try{await this.tx('readwrite',s=>s.delete(id))}catch(_){}},
+  async all(){const d=await this.open();return new Promise((res,rej)=>{const out={};const t=d.transaction('m');const c=t.objectStore('m').openCursor();c.onsuccess=()=>{const k=c.result;if(k){out[k.key]=k.value;k.continue()}else res(out)};c.onerror=()=>rej(c.error)})}
+};
+const _urls={};
+const mediaCount=j=>Object.values(j.media||{}).reduce((a,x)=>a+(x||[]).length,0);
+function mediaHtml(ids,edit){return (ids||[]).length?`<div class="mgrid">${ids.map(id=>`<div class="mitem" data-mid="${id}"><span class="mload">⏳</span>${edit?`<button type="button" class="mdel" data-mdel="${id}" aria-label="Quitar archivo">✕</button>`:''}</div>`).join('')}</div>`:''}
+async function hydrateMedia(root){if(!root)return;for(const el of root.querySelectorAll('[data-mid]')){if(el.dataset.ok)continue;el.dataset.ok=1;const id=el.dataset.mid;
+  let rec;try{rec=await media.get(id)}catch(_){}
+  if(!rec){el.querySelector('.mload').textContent='❔';el.title='Este archivo no está en este dispositivo';continue}
+  const url=_urls[id]||(_urls[id]=URL.createObjectURL(rec.blob));const t=rec.type||'';let node;
+  if(t.startsWith('image/')){node=document.createElement('img');node.src=url;node.alt='';node.addEventListener('click',()=>viewImg(url))}
+  else if(t.startsWith('video/')){node=document.createElement('video');node.src=url;node.controls=true;node.playsInline=true;node.preload='metadata'}
+  else{node=document.createElement('audio');node.src=url;node.controls=true;el.classList.add('aud')}
+  el.querySelector('.mload').replaceWith(node)}}
+function viewImg(url){const d=document.createElement('div');d.className='imgview';d.innerHTML=`<img src="${url}" alt="">`;d.addEventListener('click',()=>d.remove());document.body.appendChild(d)}
+
 /* ---------- Hojas ---------- */
 function sheet(html,onClick){const root=$('#sheet-root');root.innerHTML=`<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true">${html}</div></div>`;
   const sc=$('#scrim');sc.addEventListener('click',e=>{if(e.target===sc)closeSheet();else onClick&&onClick(e)});document.body.style.overflow='hidden'}
@@ -552,18 +585,17 @@ function renderRutinas(){
   const rs=Object.entries(S.rutinas).sort((a,b)=>(a[1].nombre||'').localeCompare(b[1].nombre||'','es'));
   if(!rs.length){$('#rutinas').innerHTML=`<div class="hero"><h2>Rutinas</h2><p>Junta varios juegos en orden para una actuación: un cumple, una cena, la clase…</p></div>
     <div class="empty"><span class="big">🎪</span><h2>Aún no tienes rutinas</h2><p>Pulsa el <b>＋</b> para crear la primera.</p></div>`;return}
-  $('#rutinas').innerHTML=`<div class="hero"><h2>Rutinas</h2><p>Tus actuaciones, con los juegos en orden.</p></div><div class="list">${rs.map(([id,r])=>{const ids=rutIds(r),tot=ids.reduce((a,x)=>a+(+S.juegos[x].dur||0),0),su=SUITS[hash(id)%4];
+  $('#rutinas').innerHTML=`<div class="hero"><h2>Rutinas</h2><p>Tus actuaciones, con los juegos en orden.</p></div><div class="list">${rs.map(([id,r])=>{const ids=rutIds(r),su=SUITS[hash(id)%4];
     return `<button class="trick" data-rut="${id}"><span class="emo">🎪</span><span class="body"><h3>${esc(r.nombre)}</h3><p>${ids.map(x=>esc(S.juegos[x].nombre)).join(' → ')||'Sin juegos todavía'}</p>
-      <span class="meta"><span class="tag">🃏 ${ids.length} ${ids.length===1?'juego':'juegos'}</span>${tot?`<span class="tag">⏱ ${tot} min</span>`:''}</span></span><span class="suit ${su[1]}" aria-hidden="true">${su[0]}</span></button>`}).join('')}</div>`;
+      <span class="meta"><span class="tag">🃏 ${ids.length} ${ids.length===1?'juego':'juegos'}</span></span></span><span class="suit ${su[1]}" aria-hidden="true">${su[0]}</span></button>`}).join('')}</div>`;
 }
-function renderRutina(rid,r){const ids=rutIds(r);const tot=ids.reduce((a,id)=>a+(+S.juegos[id].dur||0),0);
+function renderRutina(rid,r){const ids=rutIds(r);
   $('#rutinas').innerHTML=`<div class="rhead"><button class="mini" data-rback aria-label="Volver a rutinas">◀</button><h2>${esc(r.nombre)}</h2><button class="mini" data-rren aria-label="Cambiar nombre">✏️</button></div>
-   <div class="count">${ids.length} ${ids.length===1?'juego':'juegos'}${tot?` · unos ${tot} minutos`:''}</div>
+   <div class="count">${ids.length} ${ids.length===1?'juego':'juegos'}</div>
    ${ids.length?`<div class="list">${ids.map((id,i)=>{const j=S.juegos[id],c=tipoOf(j.cat);return `<div class="showitem"><span class="n">${i+1}</span>
-     <button class="nm" data-open="${id}"><b>${esc(c.icon)} ${esc(j.nombre)}</b><small>${esc(j.material||c.name)}</small></button>
+     <button class="nm" data-open="${id}"><b>${esc(c.icon)} ${esc(j.nombre)}</b><small>${esc(c.name)}</small></button>
      <button class="mini" data-mv="${i}" data-d="-1" aria-label="Subir" ${i?'':'disabled'}>▲</button><button class="mini" data-mv="${i}" data-d="1" aria-label="Bajar" ${i<ids.length-1?'':'disabled'}>▼</button>
      <button class="mini" data-rm="${id}" aria-label="Quitar de la rutina">✕</button></div>`}).join('')}</div>
-   <div class="panel"><h4>🎒 Lo que necesitas llevar</h4><div class="txt muted">${esc([...new Set(ids.map(id=>S.juegos[id].material).filter(Boolean))].join(' · ')||'Nada apuntado')}</div></div>
    <button class="abra" id="perform">🎭 Modo actuación</button>`:`<div class="empty"><span class="big">🃏</span>Esta rutina está vacía.<br>Pulsa <b>＋</b> para añadir juegos.</div>`}
    <div class="row" style="justify-content:center;margin-top:16px"><button class="btn ghost sm" data-addj>＋ Añadir juegos</button><button class="btn danger sm" id="rut-del">🗑 Borrar rutina</button></div>`;
 }
@@ -574,7 +606,7 @@ function renameRutina(rid){const r=S.rutinas[rid];sheet(`<div class="grab"></div
   $('#rn').addEventListener('submit',e=>{e.preventDefault();store.saveRutina(rid,{...S.rutinas[rid],nombre:$('#rn-n').value.trim()});closeSheet()})}
 function pickJuegos(rid){const all=list().sort((a,b)=>(a.nombre||'').localeCompare(b.nombre||'','es'));
   sheet(`<div class="grab"></div><h2>Añadir juegos</h2><p class="hint">Marca los juegos de «${esc(S.rutinas[rid].nombre)}». Se añaden al final; luego los ordenas.</p>
-   ${all.map(j=>`<button class="pickrow" data-pj="${j.id}" aria-pressed="${(S.rutinas[rid].ids||[]).includes(j.id)}"><span class="ck"></span><span>${esc(tipoOf(j.cat).icon)} ${esc(j.nombre)} <span class="muted">· ${NIV[j.nivel]?NIV[j.nivel].icon:''}</span></span></button>`).join('')||'<p class="muted">Primero guarda algún juego en la pestaña Juegos.</p>'}
+   ${all.map(j=>`<button class="pickrow" data-pj="${j.id}" aria-pressed="${(S.rutinas[rid].ids||[]).includes(j.id)}"><span class="ck"></span><span>${esc(tipoOf(j.cat).icon)} ${esc(j.nombre)} </span></button>`).join('')||'<p class="muted">Primero guarda algún juego en la pestaña Juegos.</p>'}
    <button class="btn wide" style="margin-top:14px" data-act="ok">Listo</button>`,
   async e=>{const p=e.target.closest('[data-pj]');if(p){const r=S.rutinas[rid],ids=r.ids||[],on=ids.includes(p.dataset.pj);
       await store.saveRutina(rid,{...r,ids:on?ids.filter(x=>x!==p.dataset.pj):[...ids,p.dataset.pj]});p.setAttribute('aria-pressed',!on);return}
@@ -586,7 +618,7 @@ function openPerform(i){const r=S.rutinas[S.rut];if(!r)return;const ids=rutIds(r
     <div class="ph"><span>🎭 ${esc(r.nombre)} · ${P+1} / ${ids.length}</span><button class="iconbtn" id="p-close" aria-label="Salir">✕</button></div>
     <div class="pbody">${chuleta(j,true)}</div>
     <div class="pnav"><button class="btn ghost" id="p-prev" ${P?'':'disabled style="opacity:.35"'}>◀ Anterior</button><button class="btn" id="p-next">${P<ids.length-1?'Siguiente ▶':'🎉 ¡Fin!'}</button></div></div>`;
-  document.body.style.overflow='hidden'}
+  document.body.style.overflow='hidden';hydrateMedia($('#perform-root'))}
 function closePerform(){$('#perform-root').innerHTML='';document.body.style.overflow=''}
 $('#perform-root').addEventListener('click',e=>{const r=S.rutinas[S.rut];const n=r?rutIds(r).length:0;
   if(e.target.closest('#p-close'))closePerform();
@@ -596,25 +628,33 @@ $('#perform-root').addEventListener('click',e=>{const r=S.rutinas[S.rut];const n
 /* ---------- Ajustes y copia de seguridad ---------- */
 function openSettings(){const n=list().length;
   sheet(`<div class="grab"></div><h2>Ajustes</h2>
-   <div class="sec"><h4>💾 Dónde se guardan tus juegos</h4><div class="txt">${mode==='db'?'En tu cuenta de Claude: los verás en cualquier dispositivo donde abras la app.':'Solo en este navegador. Haz copias de seguridad de vez en cuando.'}</div></div>
+   <div class="sec"><h4>💾 Dónde se guardan tus juegos</h4><div class="txt">${mode==='db'?'Los textos, en tu cuenta de Claude. Las fotos, vídeos y audios, solo en este dispositivo.':'Todo se guarda en este móvil. Haz una copia completa de vez en cuando.'}</div></div>
    <div class="sec"><h4>🏷️ Tipos de juego</h4><button class="btn ghost sm" data-act="tipos">Editar el clasificador</button></div>
-   <div class="sec"><h4>📦 Copia de seguridad</h4><div class="txt muted" style="font-size:14px">Copia todos tus juegos (${n}), rutinas y tipos como texto para guardarlos donde quieras, o pega una copia para recuperarlos.</div>
-     <div class="row" style="margin-top:10px"><button class="btn sm" data-act="copy">📋 Copiar mis datos</button><button class="btn ghost sm" data-act="file">📂 Cargar archivo</button></div>
+   <div class="sec"><h4>📦 Copia de seguridad</h4><div class="txt muted" style="font-size:14px">Guarda todos tus juegos (${n}), rutinas y tipos, o recupéralos desde una copia.</div>
+     <div class="row" style="margin-top:10px"><button class="btn sm" data-act="dl">⬇️ Descargar copia completa</button><button class="btn ghost sm" data-act="file">📂 Cargar copia</button></div>
+     <p class="hint">La copia completa lleva también las fotos, vídeos y audios. «Copiar texto» solo lleva los textos.</p>
+     <div class="row"><button class="btn ghost sm" data-act="copy">📋 Copiar texto</button></div>
      <div class="field" style="margin-top:10px"><textarea id="bk-txt" rows="4" placeholder="Aquí aparece tu copia, o pega aquí una copia para cargarla"></textarea></div>
      <button class="btn ghost sm" data-act="import">⬆️ Cargar lo pegado</button>
      <input type="file" id="bk-file" accept=".json,.txt,application/json,text/plain" hidden></div>
-   <p class="hint" style="text-align:center;margin-top:14px">La Magia Molona · versión 2</p>`,
+   <p class="hint" style="text-align:center;margin-top:14px">La Magia Molona · versión 3</p>`,
   async e=>{const a=e.target.closest('[data-act]');if(!a)return;
     if(a.dataset.act==='tipos')openTipos();
     if(a.dataset.act==='copy'){const t=JSON.stringify({app:'La Magia Molona',v:2,fecha:today(),juegos:S.juegos,rutinas:S.rutinas,tipos:S.tipos});$('#bk-txt').value=t;
       try{await navigator.clipboard.writeText(t);toast('Copiado. Pégalo en una nota o un correo 📋')}catch(_){$('#bk-txt').select();toast('Selecciona el texto y cópialo')}}
     if(a.dataset.act==='file')$('#bk-file').click();
+    if(a.dataset.act==='dl'){a.disabled=true;a.textContent='Preparando…';try{const all=await media.all();const md={};
+        for(const [id,r] of Object.entries(all))md[id]={type:r.type,name:r.name,data:await new Promise(res=>{const fr=new FileReader();fr.onload=()=>res(fr.result);fr.readAsDataURL(r.blob)})};
+        const blob=new Blob([JSON.stringify({app:'La Magia Molona',v:3,fecha:today(),juegos:S.juegos,rutinas:S.rutinas,tipos:S.tipos,media:md})],{type:'application/json'});
+        const u=URL.createObjectURL(blob),l=document.createElement('a');l.href=u;l.download='magia-molona-'+today()+'.json';document.body.appendChild(l);l.click();l.remove();setTimeout(()=>URL.revokeObjectURL(u),5000);toast('Copia descargada ⬇️')}
+      catch(err){console.warn(err);toast('No se pudo preparar la copia')}a.disabled=false;a.textContent='⬇️ Descargar copia completa'}
     if(a.dataset.act==='import')importText($('#bk-txt').value);
   });
   $('#bk-file').addEventListener('change',async e=>{const f=e.target.files[0];if(f)importText(await f.text())});
 }
 async function importText(t){let d;try{d=JSON.parse(t)}catch(_){toast('Eso no parece una copia válida');return}
   if(!d||typeof d.juegos!=='object'){toast('No encuentro juegos en esa copia');return}
+  if(d.media&&typeof d.media==='object'){for(const [id,m] of Object.entries(d.media)){try{const b=await (await fetch(m.data)).blob();await media.tx('readwrite',st=>st.put({blob:b,type:m.type||b.type,name:m.name||''},id))}catch(err){console.warn(err)}}}
   if(Array.isArray(d.tipos)&&d.tipos.length){for(const x of d.tipos)if(x&&x.id&&!S.tipos.some(y=>y.id===x.id))S.tipos.push(x);store.saveTipos()}
   let k=0;for(const [id,j] of Object.entries(d.juegos)){if(j&&j.nombre){await store.saveJuego(id,j);k++}}
   for(const [id,r] of Object.entries(d.rutinas||{}))if(r&&r.nombre)await store.saveRutina(id,r);
@@ -634,7 +674,7 @@ $('#q').addEventListener('input',e=>{S.q=e.target.value;render()});
 $('#fab').addEventListener('click',()=>{if(S.tab==='juegos')openEdit();else if(S.rut)pickJuegos(S.rut);else newRutina()});
 $('#open-settings').addEventListener('click',openSettings);
 $('#azar').addEventListener('click',e=>{const r=list().filter(matches);if(!r.length){toast('No hay juegos con estos filtros');return}
-  const w=r.flatMap(j=>Array(j.fav||j.nivel==='estrella'?3:1).fill(j));sparkles(e.currentTarget,12);const j=w[Math.floor(Math.random()*w.length)];setTimeout(()=>openDetail(j.id),350)});
+  const w=r.flatMap(j=>Array(j.fav?3:1).fill(j));sparkles(e.currentTarget,12);const j=w[Math.floor(Math.random()*w.length)];setTimeout(()=>openDetail(j.id),350)});
 document.addEventListener('click',async e=>{
   const t=e.target;if(t.closest('.sheet')||t.closest('.perform'))return;
   const o=t.closest('[data-open]');if(o){openDetail(o.dataset.open);return}
