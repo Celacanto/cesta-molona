@@ -281,7 +281,7 @@ form.stack{display:grid;gap:14px;margin-top:8px}
     </div>
     <div id="hdr-juegos">
       <div class="search"><span aria-hidden="true">🔍</span><input id="q" type="search" placeholder="Buscar un juego…" autocomplete="off"><button id="azar" aria-label="Elegir un juego al azar" title="Elegir uno al azar" style="font-size:20px;padding:6px 2px">🎲</button></div>
-      <div class="chips" id="cat-chips" role="group" aria-label="Filtrar por tipo de juego"></div>
+      <div class="chips" id="cat-chips" hidden></div>
     </div>
   </header>
 
@@ -404,7 +404,7 @@ function render(){
   $('#sub').textContent=all.length?`${all.length} ${all.length===1?'juego':'juegos'} en la chistera`:'Mis juegos de cartomagia';
   const nr=Object.keys(S.rutinas).length,rb=$('#rut-badge');rb.hidden=!nr;rb.textContent=nr;
   $('#fab').setAttribute('aria-label',S.tab==='juegos'?'Añadir un juego':S.rut?'Añadir juegos a la rutina':'Nueva rutina');
-  if(S.tab==='juegos'){renderChips(all);renderList(all)}
+  if(S.tab==='juegos'){$('#lv-chips').hidden=true;renderList(all)}
   if(S.tab==='rutinas')renderRutinas();
 }
 function renderChips(all){
