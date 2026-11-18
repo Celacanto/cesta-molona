@@ -111,6 +111,15 @@ header.top{position:sticky;top:0;z-index:20;margin:0 -16px;padding:14px 16px 12p
 .imgview img{max-width:100%;max-height:100%;border-radius:12px}
 .perform .mitem img,.perform .mitem video{height:200px}
 #ef .tiporow input{padding:11px 13px;border-radius:14px;background:rgba(255,255,255,.07);border:1px solid var(--line);font-size:16px}
+.list:has(.line){gap:6px}
+.line{display:flex;align-items:center;gap:10px;width:100%;text-align:left;padding:9px 14px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid var(--line);font-size:16px}
+.line:active{background:rgba(183,148,255,.15)}
+.line .li{flex:none;font-size:18px;width:24px;text-align:center}
+.line .ln{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:500}
+.line .lf{flex:none;font-size:14px}
+.sheet.full{min-height:88vh}
+.sheet.full>.mgrid{margin-top:12px}
+.dtools{display:flex;justify-content:center;gap:10px;margin-top:22px;opacity:.85}
 .rhead{display:flex;align-items:center;gap:10px;margin-top:14px}
 .rhead h2{flex:1;font-family:var(--f-magic);font-size:22px;margin:0;line-height:1.2}
 .tag{font-size:12px;padding:3px 8px;border-radius:999px;background:rgba(255,255,255,.08);color:var(--ink);white-space:nowrap}
@@ -406,12 +415,8 @@ function renderChips(all){
     `<button class="chip" id="tipos-open" style="border-style:dashed">🏷️ Tipos…</button>`;
   $('#lv-chips').hidden=true;
 }
-function card(j){const c=tipoOf(j.cat),su=SUITS[hash(j.id)%4],nm=mediaCount(j);
-  return `<button class="trick" data-open="${j.id}">
-    <span class="emo">${esc(c.icon)}</span>
-    <span class="body"><h3>${esc(j.nombre||'Sin nombre')}</h3>${j.efecto?`<p>${esc(j.efecto)}</p>`:''}
-      <span class="meta"><span class="tag">${esc(c.name)}</span>${nm?`<span class="tag">📎 ${nm}</span>`:''}</span></span>
-    ${j.fav?'<span class="fav" aria-label="Favorito">⭐</span>':''}<span class="suit ${su[1]}" aria-hidden="true">${su[0]}</span></button>`}
+function card(j){const c=tipoOf(j.cat);
+  return `<button class="line" data-open="${j.id}"><span class="li">${esc(c.icon)}</span><span class="ln">${esc(j.nombre||'Sin nombre')}</span>${j.fav?'<span class="lf" aria-label="Favorito">⭐</span>':''}</button>`}
 function renderList(all){
   $('#lv-chips').hidden=!all.length;
   if(!S.loaded&&!all.length){$('#list').innerHTML=`<div class="empty"><span class="big">🎩</span>Sacando los juegos de la chistera…</div>`;$('#count').textContent='';return}
@@ -425,33 +430,29 @@ function renderList(all){
 
 /* ---------- La chuleta de un juego ---------- */
 function chuleta(j,big){
-  const c=tipoOf(j.cat);
-  const sec=(ic,t,k)=>{const v=j[k],m=(j.media||{})[k]||[];return (v||m.length)?`<div class="sec"><h4>${ic} ${t}</h4>${v?`<div class="txt">${esc(v)}</div>`:''}${mediaHtml(m)}</div>`:''};
+  const sec=(t,k)=>{const v=j[k],m=(j.media||{})[k]||[];return (v||m.length)?`<div class="sec"><h4>${t}</h4>${v?`<div class="txt">${esc(v)}</div>`:''}${mediaHtml(m)}</div>`:''};
   const mn=(j.media||{}).nombre||[];
   return `${big?`<h1>${esc(j.nombre)}</h1>`:`<h2>${esc(j.nombre||'Sin nombre')}</h2>`}
-   <div class="row" style="margin-top:6px"><span class="tag">${esc(c.icon)} ${esc(c.name)}</span></div>
-   ${mn.length?`<div class="sec">${mediaHtml(mn)}</div>`:''}
-   ${sec('✨','Efecto','efecto')}
-   ${sec('🧪','Preparación','prep')}`}
+   ${mn.length?mediaHtml(mn):''}
+   ${sec('Efecto','efecto')}
+   ${sec('Método','prep')}`}
 function openDetail(id){const j=S.juegos[id];if(!j)return;
-  const enR=Object.values(S.rutinas).filter(r=>(r.ids||[]).includes(id)).map(r=>r.nombre);
   sheet(`<div class="grab"></div>${chuleta(j)}
-   ${enR.length?`<p class="hint" style="margin-top:12px">🎪 Está en: ${enR.map(esc).join(', ')}</p>`:''}
-   <div class="toolbar">
-     <button class="btn" data-act="edit">✏️ Editar</button>
-     <button class="btn ghost" data-act="fav">${j.fav?'⭐ Quitar de favoritos':'☆ Favorito'}</button>
-     <button class="btn ghost" data-act="rut">🎪 Rutinas…</button>
-     <button class="btn danger" data-act="del">🗑 Borrar</button>
+   <div class="dtools">
+     <button class="mini" data-act="edit" aria-label="Editar" title="Editar">✏️</button>
+     <button class="mini" data-act="fav" aria-label="${j.fav?'Quitar de favoritos':'Marcar favorito'}" title="Favorito">${j.fav?'⭐':'☆'}</button>
+     <button class="mini" data-act="rut" aria-label="Rutinas" title="Rutinas">🎪</button>
+     <button class="mini" data-act="del" aria-label="Borrar" title="Borrar">🗑</button>
    </div>`,
   async e=>{const a=e.target.closest('[data-act]');if(!a)return;const act=a.dataset.act;
     if(act==='edit')openEdit(id);
     if(act==='fav'){await store.saveJuego(id,{...j,fav:!j.fav});openDetail(id)}
     if(act==='rut')openRutPicker(id);
-    if(act==='del'){if(a.dataset.sure){for(const ids of Object.values(j.media||{}))ids.forEach(m=>media.del(m));await store.deleteJuego(id);closeSheet();toast('Juego borrado')}else{a.dataset.sure=1;a.textContent='¿Seguro? Pulsa otra vez'}}
+    if(act==='del'){if(a.dataset.sure){for(const ids of Object.values(j.media||{}))ids.forEach(m=>media.del(m));await store.deleteJuego(id);closeSheet();toast('Juego borrado')}else{a.dataset.sure=1;a.textContent='¿Borrar?';a.style.width='auto';a.style.padding='0 10px'}}
   });
+  $('#sheet-root .sheet').classList.add('full');
   hydrateMedia($('#sheet-root'));
 }
-
 /* ---------- En qué rutinas está un juego ---------- */
 function openRutPicker(jid){const rs=Object.entries(S.rutinas).sort((a,b)=>(a[1].nombre||'').localeCompare(b[1].nombre||'','es'));
   sheet(`<div class="grab"></div><h2>Rutinas</h2><p class="hint">Marca en qué rutinas va «${esc(S.juegos[jid].nombre)}».</p>
@@ -481,7 +482,7 @@ function openEdit(id){const isNew=!id;const j=isNew?{cat:S.cat&&S.cat!=='__fav'?
       ${j.cat&&!S.tipos.some(t=>t.id===j.cat)?'<option value="" selected>🃏 Sin tipo</option>':''}<option value="__new">➕ Crear un tipo nuevo…</option></select>
       <div class="tiporow" id="f-newtipo" hidden><input class="emo-in" id="f-nt-ico" value="🃏" maxlength="4" aria-label="Emoji del tipo"><input id="f-nt-name" class="nm-in" placeholder="Nombre del tipo nuevo"></div></div>
     <div class="field"><div class="flab"><label for="f-efecto">✨ Efecto</label>${tools('efecto')}</div><textarea id="f-efecto" rows="3" placeholder="Qué pasa, contado como lo vería un espectador">${esc(j.efecto)}</textarea>${mbox('efecto')}</div>
-    <div class="field"><div class="flab"><label for="f-prep">🧪 Preparación</label>${tools('prep')}</div><textarea id="f-prep" rows="3" placeholder="Lo que hay que dejar listo antes">${esc(j.prep)}</textarea>${mbox('prep')}</div>
+    <div class="field"><div class="flab"><label for="f-prep">🔑 Método</label>${tools('prep')}</div><textarea id="f-prep" rows="3" placeholder="Cómo se hace">${esc(j.prep)}</textarea>${mbox('prep')}</div>
     <div class="recbar" id="recbar" hidden><span class="dot"></span><span id="rec-t">0:00</span> Grabando…<button type="button" class="btn sm" id="rec-stop">⏹ Parar</button></div>
     <button class="btn wide" type="submit">${isNew?'🎩 Guardar en la chistera':'💾 Guardar cambios'}</button>
     <button class="btn ghost wide" type="button" data-cancel>Cancelar</button>
