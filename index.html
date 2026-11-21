@@ -583,22 +583,8 @@ body{overflow-x:hidden}
     <!-- COMPRAS -->
     <section id="tab-gastos" class="tab" hidden>
       <div id="gastos"></div>
-      <form id="g-form" class="card stack" style="margin-top:14px" autocomplete="off">
-        <h3 style="margin:0">Apuntar un gasto</h3>
-        <div class="gcats" id="g-cats" role="radiogroup" aria-label="Tipo de gasto"></div>
-        <div class="gpair">
-          <div class="field"><label for="g-date">Fecha</label><input id="g-date" type="date" required class="gfield"></div>
-          <div class="field"><label for="g-amount">Importe (€)</label><input id="g-amount" class="gfield" type="text" inputmode="decimal" autocomplete="off" required placeholder="20,00"></div>
-        </div>
-        <div class="field"><label for="g-notes">Observaciones <span class="muted">· opcional</span></label><input id="g-notes" type="text" placeholder="Ej. ibuprofeno, depósito lleno…"></div>
-        <button class="btn" type="submit">Guardar gasto</button>
-      </form>
-    </section>
-
-    <section id="tab-compras" class="tab" hidden>
-      <div id="compras"></div>
       <form id="cp-form" class="card stack" style="margin-top:14px" autocomplete="off">
-        <h3 style="margin:0">Apuntar un ticket</h3>
+        <h3 style="margin:0">🧾 Apuntar un ticket del súper</h3>
         <div class="gpair">
           <div class="field"><label for="cp-date">Fecha</label><input id="cp-date" class="gfield" type="date" required></div>
           <div class="field"><label for="cp-total">Importe (€)</label><input id="cp-total" class="gfield" type="text" inputmode="decimal" autocomplete="off" required placeholder="45,30"></div>
@@ -608,6 +594,16 @@ body{overflow-x:hidden}
         <div class="field"><label for="cp-dept">Departamento</label><select id="cp-dept"></select></div>
         <div class="field"><label for="cp-notes">Observaciones <span class="muted">· opcional</span></label><textarea id="cp-notes" rows="2" placeholder="Ej. compra grande del mes, cumpleaños…" style="resize:vertical"></textarea></div>
         <button class="btn" type="submit">Guardar ticket</button>
+      </form>
+      <form id="g-form" class="card stack" style="margin-top:14px" autocomplete="off">
+        <h3 style="margin:0">Apuntar un gasto</h3>
+        <div class="gcats" id="g-cats" role="radiogroup" aria-label="Tipo de gasto"></div>
+        <div class="gpair">
+          <div class="field"><label for="g-date">Fecha</label><input id="g-date" type="date" required class="gfield"></div>
+          <div class="field"><label for="g-amount">Importe (€)</label><input id="g-amount" class="gfield" type="text" inputmode="decimal" autocomplete="off" required placeholder="20,00"></div>
+        </div>
+        <div class="field"><label for="g-notes">Observaciones <span class="muted">· opcional</span></label><input id="g-notes" type="text" placeholder="Ej. ibuprofeno, depósito lleno…"></div>
+        <button class="btn" type="submit">Guardar gasto</button>
       </form>
       <div class="card stack" id="backup" style="margin-top:14px" hidden>
         <h3 style="margin:0">Copia de seguridad</h3>
@@ -619,14 +615,14 @@ body{overflow-x:hidden}
       <div class="card stack" id="casa" style="margin-top:14px" hidden></div>
     </section>
 
+    <div id="compras" hidden></div>
+
   </main>
 </div>
 
 <div class="tabbar" id="tabbar"><nav role="tablist">
   <button role="tab" data-tab="frecuentes" aria-selected="false"><span class="ti ti-bulb">📝</span>Artículos<span class="badge" id="falta-badge" hidden>0</span></button>
   
-  <button role="tab" data-tab="ahorro" aria-selected="false"><span class="ti ti-bulb ti-pig"><svg viewBox="0 0 40 32" width="30" height="24" aria-hidden="true" style="display:block"><circle cx="21" cy="5" r="4.2" fill="#FFC21F" stroke="#B8860B" stroke-width="1.3"/><path d="M19.6 5h2.8" stroke="#B8860B" stroke-width="1.3" stroke-linecap="round"/><path d="M10 13 L8 7.5 L14.5 10.5 Z" fill="#F48FB1" stroke="#C2185B" stroke-width="1.4" stroke-linejoin="round"/><ellipse cx="19" cy="18.5" rx="14" ry="10" fill="#F8A5C2" stroke="#C2185B" stroke-width="1.6"/><rect x="9" y="25" width="4" height="5" rx="1.5" fill="#F48FB1" stroke="#C2185B" stroke-width="1.4"/><rect x="23" y="25" width="4" height="5" rx="1.5" fill="#F48FB1" stroke="#C2185B" stroke-width="1.4"/><ellipse cx="33.5" cy="19" rx="4" ry="4.4" fill="#F48FB1" stroke="#C2185B" stroke-width="1.5"/><circle cx="32.3" cy="18.6" r=".9" fill="#C2185B"/><circle cx="34.8" cy="18.6" r=".9" fill="#C2185B"/><circle cx="27" cy="14.5" r="1.4" fill="#3a1f2b"/><path d="M16 10.4h7" stroke="#C2185B" stroke-width="2" stroke-linecap="round"/><path d="M5 17 q-3 -1 -2.5 2.5 q.5 2.5 3 1" fill="none" stroke="#C2185B" stroke-width="1.4" stroke-linecap="round"/><ellipse cx="14" cy="16" rx="4" ry="2.2" fill="#fff" opacity=".45"/></svg></span>Ahorro</button>
-  <button role="tab" data-tab="compras" aria-selected="false"><span class="ti">🧾</span>Tickets</button>
   <button role="tab" data-tab="gastos" aria-selected="false"><span class="ti ti-bulb">💶</span>Otros gastos</button>
 </nav></div>
 
@@ -791,7 +787,7 @@ function render(){
   renderHeader();
   if(S.tab==='frecuentes')renderLista();
   if(S.tab==='ahorro')renderReco();
-  if(S.tab==='compras')renderCompras();
+  if(S.tab==='compras'||S.tab==='gastos')renderCompras();
   if(S.tab==='gastos')renderGastos();
   const nf=Object.values(S.lista).filter(x=>x.falta).length;const fb=$('#falta-badge');fb.hidden=!nf;fb.textContent=nf;
 }
@@ -867,9 +863,9 @@ function renderGastos(){
   if(food.length||+bud._alim>0)groups.push({c:{id:'_alim',icon:'🛒',name:'Alimentación',c:'#14824A'},items:food,food:true});
   groups.sort((x,y)=>(by[y.c.id]||0)-(by[x.c.id]||0));
   const line=([id,g])=>`<div class="line" style="grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px"><button type="button" class="cprow" data-gedit="${esc(id)}"><span class="mono muted" style="font-size:13px">${fd(g.date)}</span><span class="mono" style="font-weight:700;grid-column:3">${money(g.amount)}</span>${g.notes?`<span class="muted" style="grid-column:1/-1;font-size:13px">📝 ${esc(g.notes)}</span>`:''}</button><button type="button" class="lidel" data-gdel="${esc(id)}" aria-label="Borrar gasto">🗑</button></div>`;
-  const fline=([id,p])=>`<div class="line"><div class="cprow" style="cursor:default"><span class="mono muted" style="font-size:13px">${fd(pDate(p))}</span><span class="mono" style="font-weight:700">${money(p.total)}</span><span class="muted" style="font-size:13px">${p.super?superName(p.super):'Ticket'}</span></div></div>`;
+  const fline=([id,p])=>`<div class="line" style="grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px"><button type="button" class="cprow" data-cpedit="${esc(id)}"><span class="mono muted" style="font-size:13px">${fd(pDate(p))}</span><span class="mono" style="font-weight:700">${money(p.total)}</span><span class="muted" style="font-size:13px">${p.super?superName(p.super):'Ticket'}${p.notes?' · 📝 '+esc(p.notes):''}</span></button><button type="button" class="lidel" data-cpdel="${esc(id)}" aria-label="Borrar ticket">🗑</button></div>`;
   const card=({c,items,food:isFood})=>{const v=isFood?foodTot:items.reduce((a,[,g])=>a+(+g.amount||0),0);const B=+bud[c.id]||0;const open=!!S.gOpen[c.id];
-    const info=B>0?`<span class="gg-sub">de ${money(B)}</span><span class="gg-sub">${v<=B?`<span class="gb-left ok">Quedan ${money(B-v)}</span>`:`<span class="gb-left over">Te pasas ${money(v-B)}</span>`}</span>`:`<span class="gg-sub muted">${isFood?`${items.length} ${items.length===1?'ticket':'tickets'} · de la pestaña Tickets`:`${items.length} ${items.length===1?'gasto':'gastos'}`}</span>`;
+    const info=B>0?`<span class="gg-sub">de ${money(B)}</span><span class="gg-sub">${v<=B?`<span class="gb-left ok">Quedan ${money(B-v)}</span>`:`<span class="gb-left over">Te pasas ${money(v-B)}</span>`}</span>`:`<span class="gg-sub muted">${isFood?`${items.length} ${items.length===1?'ticket':'tickets'} · se apuntan aquí abajo`:`${items.length} ${items.length===1?'gasto':'gastos'}`}</span>`;
     return `<div class="card gg${open?' open':''}"><button type="button" class="gg-head" data-gtoggle="${esc(c.id)}" aria-expanded="${open}"><span class="gg-ic">${c.icon}</span><span class="gg-name"><b>${esc(c.name)}</b>${info}</span><span class="mono gg-tot">${money(v)}</span><span class="gg-chev" aria-hidden="true">▾</span></button>
       ${B>0?`<div class="gb-track gg-track"><div class="fill" style="width:${Math.min(100,v/B*100)}%;background:${v>B?'var(--danger,#D2372E)':c.c}"></div></div>`:''}
       ${open?(items.length?`<div class="gg-list">${items.map(isFood?fline:line).join('')}</div>`:'<p class="muted" style="margin:8px 0 0;font-size:14px">Sin gastos este mes.</p>'):''}</div>`};
@@ -960,8 +956,8 @@ async function casaBusy(label,fn){const el=$('#casa');el.dataset.busy=1;el.inner
   try{await fn();location.reload()}catch(e){console.warn(e);delete el.dataset.busy;renderCasa();toast(e&&e.message&&!/firebase|auth\//i.test(e.message)?e.message:'No se pudo conectar. Revisa la conexión y prueba otra vez')}}
 document.addEventListener('click',e=>{const t=e.target.closest('#casa-create,#casa-joinbtn,#casa-share,#casa-leave,[data-gojoin]');if(!t)return;
   if(t.id==='casa-create')casaBusy('⏳ Subiendo tus datos a la nube…',casaCreate);
-  else if(t.id==='casa-joinbtn'||t.dataset.gojoin){if(t.dataset.gojoin)switchTab('compras');const f=$('#casa-join');if(f){f.hidden=false;f.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(()=>$('#casa-in').focus(),350)}}
-  else if(t.id==='casa-share'){const c=showCode(casaCode());const txt=`Únete a nuestra lista de La Cesta Molona 🛒\n1) Abre https://celacanto.github.io/cesta-molona e instálala en la pantalla de inicio.\n2) En la pestaña Tickets, pulsa «Tengo un código» y escribe: ${c}`;
+  else if(t.id==='casa-joinbtn'||t.dataset.gojoin){if(t.dataset.gojoin)switchTab('gastos');const f=$('#casa-join');if(f){f.hidden=false;f.scrollIntoView({block:'center',behavior:'smooth'});setTimeout(()=>$('#casa-in').focus(),350)}}
+  else if(t.id==='casa-share'){const c=showCode(casaCode());const txt=`Únete a nuestra lista de La Cesta Molona 🛒\n1) Abre https://celacanto.github.io/cesta-molona e instálala en la pantalla de inicio.\n2) En la pestaña Otros gastos, abajo del todo, pulsa «Tengo un código» y escribe: ${c}`;
     if(navigator.share)navigator.share({text:txt}).catch(()=>{});else navigator.clipboard?.writeText(txt).then(()=>toast('Código copiado'),()=>toast(c))}
   else if(t.id==='casa-leave'){if(!t.dataset.armed){t.dataset.armed=1;t.textContent='¿Seguro? Pulsa otra vez';t.classList.add('danger');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='Dejar de compartir';t.classList.remove('danger')}},3500);return}
     casaLeave()}});
@@ -1003,7 +999,7 @@ async function upsertProduct({name,dept,superId,price,manual=true}){
   await store.saveProduct(id,np);
   return id;
 }
-function switchTab(t){S.tab=t;
+function switchTab(t){if(t==='compras'||t==='ahorro')t='gastos';S.tab=t;
   document.querySelectorAll('[data-tab]').forEach(b=>b.setAttribute('aria-selected',b.dataset.tab===t));
   $('#li-search').hidden=t!=='frecuentes';document.documentElement.classList.toggle('on-art',t==='frecuentes');document.querySelectorAll('.li-tabs').forEach(n=>n.remove());fillTbRow(t);const sec=t==='frecuentes'?'cesta':t;document.querySelectorAll('.tab').forEach(s=>s.hidden=s.id!=='tab-'+sec);window.scrollTo({top:0});render()}
 
@@ -1058,7 +1054,7 @@ document.addEventListener('click',async e=>{
 async function buyNow(onlyPicked){let lines=cartLines();if(onlyPicked&&lines.some(l=>S.picked[l.id]))lines=lines.filter(l=>S.picked[l.id]);if(!lines.length)return;
     const ids=new Set(lines.map(l=>l.id));await unmarkBought(lines);const by={};lines.forEach(l=>(by[l.p.super]=by[l.p.super]||[]).push(l));
     for(const [sid,arr] of Object.entries(by)){await store.addPurchase({month:monthKey(0),date:today(),super:sid,source:'cesta',total:Math.round(arr.reduce((a,l)=>a+l.q*l.p.price,0)*100)/100,items:arr.map(l=>({name:l.p.name,dept:tipoOfProduct(l.p),qty:l.q,price:+l.p.price}))})}
-    ids.forEach(id=>{delete S.cart[id];delete S.picked[id];delete S.keep[id]});store.saveCart();render();confetti();toast('¡Compra apuntada en Tickets!')}
+    ids.forEach(id=>{delete S.cart[id];delete S.picked[id];delete S.keep[id]});store.saveCart();render();confetti();toast('¡Compra apuntada!')}
 
 document.addEventListener('change',e=>{
   if(e.target.id==='trip-min'){store.saveSettings({...S.settings,tripMin:parseNum(e.target.value)});return}
@@ -1546,7 +1542,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='97';
+const APP_BUILD='98';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
