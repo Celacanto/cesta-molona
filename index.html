@@ -312,7 +312,7 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 @media (max-width:360px){.gcat{font-size:10.5px;padding:7px 1px;letter-spacing:-.02em}.gcats{gap:4px}}
 @media (max-width:340px){.tabbar button{font-size:8.5px!important;letter-spacing:-.03em}}
 @media (max-width:380px){.gbar{gap:4px}.gbar .chip{padding:5px 7px;font-size:11.5px}.gtot{font-size:13.5px}}
-.gcats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.gcats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px}.gcats .gcat{font-size:clamp(10px,3vw,12px);padding:8px 2px;letter-spacing:-.02em}
 .gcat{display:flex;flex-direction:column;align-items:center;gap:2px;border:1.5px solid var(--line);background:var(--surface);border-radius:14px;padding:8px 4px;font:inherit;font-size:12.5px;font-weight:700;color:inherit;cursor:pointer}
 .gcat span{font-size:20px;line-height:1}
 svg.emo{display:inline-block;vertical-align:-0.15em}
@@ -443,7 +443,7 @@ input.gfield[type=date]::-webkit-calendar-picker-indicator{margin-left:2px;paddi
 .chip#li-top.done{background:#1F9D55;color:#fff;border-color:#145C33;box-shadow:2px 3px 0 #145C33}
 .confeti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:9999}#li-top.party{background:#1F9D55!important;color:#fff!important;border-color:#145C33!important;box-shadow:2px 3px 0 #145C33!important;animation:party 2.6s cubic-bezier(.3,1.6,.5,1) both;position:relative;z-index:6}@keyframes party{0%{transform:scale(1)}12%{transform:scale(1.45) rotate(-6deg)}22%{transform:scale(1.3) rotate(5deg)}32%{transform:scale(1.4) rotate(-3deg)}45%{transform:scale(1.35)}80%{transform:scale(1.35)}100%{transform:scale(1)}}
 .li-acts{position:relative}.li-tabs{position:absolute;inset:-2px;z-index:7;display:flex;gap:6px;background:var(--bg);animation:askin .16s ease-out}.li-tabs .lt{flex:1 1 0;min-width:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;padding:4px 2px;border-radius:14px;border:2px solid var(--ink);background:#fff;color:var(--ink);box-shadow:2px 3px 0 var(--ink);font-weight:800;font-size:clamp(11px,3.3vw,12.5px);line-height:1.1;cursor:pointer;touch-action:manipulation}.li-tabs .lt:active{transform:translate(2px,3px);box-shadow:none}.li-tabs .lt .ti{font-size:18px;line-height:1}.li-tabs .lt .ti svg{width:24px;height:19px}.li-tabs .lt span:not(.ti){white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.li-tabs .lt-x{flex:0 0 46px;font-size:18px;background:#fff}.li-ask-del span{font-size:clamp(12px,3.6vw,14px)}@media (max-width:360px){.li-ask button{min-width:52px}.li-ask{gap:6px;padding:0 6px}}
-.gg-wrap{display:grid;gap:10px;margin-top:12px}.gg{padding:12px 14px}.gg-head{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:10px;cursor:pointer}.gg-ic{font-size:24px}.gg-name{display:flex;flex-direction:column;min-width:0}.gg-name b{font-size:16px}.gg-sub{font-size:12.5px}.gg-tot{font-weight:800;font-size:16px}.gg-chev{font-size:18px;transition:transform .2s;color:var(--muted)}.gg.open .gg-chev{transform:rotate(180deg)}.gg-track{margin-top:8px}.gg-list{margin-top:8px;border-top:1px dashed var(--line);padding-top:4px}.gg-list .cprow{grid-template-columns:5em minmax(0,1fr) auto!important}.gg-list .cprow>span:nth-child(1){grid-column:1!important;grid-row:1!important}.gg-list .cprow>span:nth-child(2){grid-column:3!important;grid-row:1!important;justify-self:end}.gg-list .cprow>span:nth-child(3){grid-row:2!important}
+.gg-wrap{display:grid;gap:10px;margin-top:12px}.gg{padding:12px 14px}.gg-head{all:unset;box-sizing:border-box;width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;align-items:center;gap:10px;cursor:pointer}.gg-ic{font-size:24px}.gg-name{display:flex;flex-direction:column;min-width:0}.gg-name b{font-size:16px}.gg-sub{font-size:12.5px}.gg-tot{font-weight:800;font-size:16px}.gg-chev{font-size:18px;transition:transform .2s;color:var(--muted)}.gg.open .gg-chev{transform:rotate(180deg)}.gg-track{margin-top:8px}.gg-list{margin-top:8px;border-top:1px dashed var(--line);padding-top:4px}.gg-list .cprow{grid-template-columns:5em minmax(0,1fr) auto!important}.gg-list .cprow>span:nth-child(1){grid-column:1!important;grid-row:1!important}.gg-list .cprow>span:nth-child(2){grid-column:3!important;grid-row:1!important;justify-self:end}.gg-list .cprow>span:nth-child(3){grid-row:2!important;grid-column:1/-1!important}
 .casa-on{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--basket);color:#fff;padding:2px 8px;border-radius:99px;vertical-align:middle;margin-left:4px}.casa-code{font-size:clamp(20px,6.5vw,28px);font-weight:800;letter-spacing:.08em;text-align:center;padding:12px 8px;border:2px dashed var(--ink);border-radius:14px;background:var(--ticket);color:var(--ticket-ink)}
 .toast{pointer-events:none;position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-weight:700;z-index:60;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
 .notice{font-size:13px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--tag) 30%,var(--surface));margin-top:12px}
@@ -583,7 +583,7 @@ body{overflow-x:hidden}
     <!-- COMPRAS -->
     <section id="tab-gastos" class="tab" hidden>
       <div id="gastos"></div>
-      <form id="cp-form" class="card stack" style="margin-top:14px" autocomplete="off">
+      <form id="cp-form" class="card stack" style="margin-top:14px" autocomplete="off" hidden>
         <h3 style="margin:0">🧾 Apuntar un ticket del súper</h3>
         <div class="gpair">
           <div class="field"><label for="cp-date">Fecha</label><input id="cp-date" class="gfield" type="date" required></div>
@@ -838,7 +838,7 @@ const GCATS=[{id:'farmacia',name:'Farmacia',icon:'💊',c:'#2E9E6B'},{id:'estanc
 const GCAT=Object.fromEntries(GCATS.map(c=>[c.id,c]));
 function renderGastos(){
   if(!$('#g-date').value)$('#g-date').value=today();
-  $('#g-cats').innerHTML=GCATS.map(c=>`<button type="button" class="gcat" role="radio" aria-checked="${S.gCat===c.id}" data-gcat="${c.id}"><span>${c.icon}</span>${c.name}</button>`).join('');
+  $('#g-cats').innerHTML=[{id:'_alim',icon:'🛒',name:'Súper'},...GCATS].map(c=>`<button type="button" class="gcat" role="radio" aria-checked="${S.gCat===c.id}" data-gcat="${c.id}"><span>${c.icon}</span>${c.name}</button>`).join('');
   const off=S.gOff||0;const st=cycleShift(off);const all=Object.entries(S.gastos).filter(([,g])=>S.gAll&&S.gView==='graf'||cycleStartOf(g.date)===st).sort((a,b)=>(b[1].date||'').localeCompare(a[1].date||''));
   const food=Object.entries(S.purchases).filter(([,p])=>cycleStartOf(pDate(p))===st).sort((a,b)=>pDate(b[1]).localeCompare(pDate(a[1])));const foodTot=food.reduce((a,[,p])=>a+(+p.total||0),0);
   const tot=all.reduce((a,[,g])=>a+(+g.amount||0),0)+foodTot;const by={_alim:foodTot};all.forEach(([,g])=>{by[g.cat]=(by[g.cat]||0)+(+g.amount||0)});
@@ -860,12 +860,12 @@ function renderGastos(){
   const bud=S.settings.gBudget||{};const hasB=bud._alim>0||GCATS.some(c=>bud[c.id]>0);S.gOpen=S.gOpen||{};
   const groups=GCATS.map(c=>({c,items:all.filter(([,g])=>g.cat===c.id)})).filter(x=>x.items.length||(+bud[x.c.id]>0));
   const known=new Set(GCATS.map(c=>c.id));const otros=all.filter(([,g])=>!known.has(g.cat));if(otros.length)groups.push({c:{id:'_otros',icon:'🏷️',name:'Otros',c:'#888'},items:otros});
-  if(food.length||+bud._alim>0)groups.push({c:{id:'_alim',icon:'🛒',name:'Alimentación',c:'#14824A'},items:food,food:true});
+  if(food.length||+bud._alim>0)groups.push({c:{id:'_alim',icon:'🛒',name:'Súper',c:'#14824A'},items:food,food:true});
   groups.sort((x,y)=>(by[y.c.id]||0)-(by[x.c.id]||0));
   const line=([id,g])=>`<div class="line" style="grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px"><button type="button" class="cprow" data-gedit="${esc(id)}"><span class="mono muted" style="font-size:13px">${fd(g.date)}</span><span class="mono" style="font-weight:700;grid-column:3">${money(g.amount)}</span>${g.notes?`<span class="muted" style="grid-column:1/-1;font-size:13px">📝 ${esc(g.notes)}</span>`:''}</button><button type="button" class="lidel" data-gdel="${esc(id)}" aria-label="Borrar gasto">🗑</button></div>`;
-  const fline=([id,p])=>`<div class="line" style="grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px"><button type="button" class="cprow" data-cpedit="${esc(id)}"><span class="mono muted" style="font-size:13px">${fd(pDate(p))}</span><span class="mono" style="font-weight:700">${money(p.total)}</span><span class="muted" style="font-size:13px">${p.super?superName(p.super):'Ticket'}${p.notes?' · 📝 '+esc(p.notes):''}</span></button><button type="button" class="lidel" data-cpdel="${esc(id)}" aria-label="Borrar ticket">🗑</button></div>`;
+  const fline=([id,p])=>`<div class="line" style="grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px"><button type="button" class="cprow" data-cpedit="${esc(id)}"><span class="mono muted" style="font-size:13px">${fd(pDate(p))}</span><span class="mono" style="font-weight:700">${money(p.total)}</span><span class="muted" style="font-size:13px">${[p.super?superName(p.super):'',p.notes?'📝 '+esc(p.notes):''].filter(Boolean).join(' · ')}</span></button><button type="button" class="lidel" data-cpdel="${esc(id)}" aria-label="Borrar ticket">🗑</button></div>`;
   const card=({c,items,food:isFood})=>{const v=isFood?foodTot:items.reduce((a,[,g])=>a+(+g.amount||0),0);const B=+bud[c.id]||0;const open=!!S.gOpen[c.id];
-    const info=B>0?`<span class="gg-sub">de ${money(B)}</span><span class="gg-sub">${v<=B?`<span class="gb-left ok">Quedan ${money(B-v)}</span>`:`<span class="gb-left over">Te pasas ${money(v-B)}</span>`}</span>`:`<span class="gg-sub muted">${isFood?`${items.length} ${items.length===1?'ticket':'tickets'} · se apuntan aquí abajo`:`${items.length} ${items.length===1?'gasto':'gastos'}`}</span>`;
+    const info=B>0?`<span class="gg-sub">de ${money(B)}</span><span class="gg-sub">${v<=B?`<span class="gb-left ok">Quedan ${money(B-v)}</span>`:`<span class="gb-left over">Te pasas ${money(v-B)}</span>`}</span>`:`<span class="gg-sub muted">${isFood?`${items.length} ${items.length===1?'ticket':'tickets'} · lo de la cabecera`:`${items.length} ${items.length===1?'gasto':'gastos'}`}</span>`;
     return `<div class="card gg${open?' open':''}"><button type="button" class="gg-head" data-gtoggle="${esc(c.id)}" aria-expanded="${open}"><span class="gg-ic">${c.icon}</span><span class="gg-name"><b>${esc(c.name)}</b>${info}</span><span class="mono gg-tot">${money(v)}</span><span class="gg-chev" aria-hidden="true">▾</span></button>
       ${B>0?`<div class="gb-track gg-track"><div class="fill" style="width:${Math.min(100,v/B*100)}%;background:${v>B?'var(--danger,#D2372E)':c.c}"></div></div>`:''}
       ${open?(items.length?`<div class="gg-list">${items.map(isFood?fline:line).join('')}</div>`:'<p class="muted" style="margin:8px 0 0;font-size:14px">Sin gastos este mes.</p>'):''}</div>`};
@@ -875,7 +875,7 @@ function renderGastos(){
 function openBudget(){const bud=S.settings.gBudget||{};const fmt=v=>v>0?(+v).toFixed(2).replace('.',','):'';
   $('#sheet-root').innerHTML=`<div class="scrim" id="scrim"><div class="sheet" role="dialog" aria-modal="true" aria-label="Presupuestos"><h2>Presupuesto de cada mes</h2>
     <p class="muted" style="margin:-4px 0 12px;font-size:14px">Lo máximo que quieres gastar en cada apartado por mes (desde el día ${S.settings.cycleDay||27}). Déjalo vacío si no quieres límite.</p>
-    <form id="gbf" class="stack" autocomplete="off">${[{id:'_alim',icon:'🛒',name:'Alimentación'},...GCATS].map(c=>`<div class="gb-in"><label for="gb-${c.id}">${c.icon} ${c.name}</label><div class="gb-eur"><input id="gb-${c.id}" type="text" inputmode="decimal" placeholder="Sin límite" value="${fmt(bud[c.id])}"><span>€</span></div></div>`).join('')}
+    <form id="gbf" class="stack" autocomplete="off">${[{id:'_alim',icon:'🛒',name:'Súper'},...GCATS].map(c=>`<div class="gb-in"><label for="gb-${c.id}">${c.icon} ${c.name}</label><div class="gb-eur"><input id="gb-${c.id}" type="text" inputmode="decimal" placeholder="Sin límite" value="${fmt(bud[c.id])}"><span>€</span></div></div>`).join('')}
       <div class="row" style="justify-content:flex-end"><button type="button" class="btn ghost" id="gb-cancel">Cancelar</button><button type="submit" class="btn">Guardar</button></div></form></div></div>`;
   const close=()=>{$('#sheet-root').innerHTML=''};
   $('#scrim').addEventListener('click',e=>{if(e.target.id==='scrim'||e.target.closest('#gb-cancel'))close()});
@@ -1130,8 +1130,9 @@ $('#g-form').addEventListener('submit',async e=>{e.preventDefault();
   const amount=Math.round(parseNum($('#g-amount').value)*100)/100;if(!(amount>0)){toast('Pon el importe');return}
   const date=$('#g-date').value||today();const notes=$('#g-notes').value.trim();
   const id='g'+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-  await store.saveGasto(id,{date,cat:S.gCat,amount,...(notes?{notes}:{})});
-  toast(`${GCAT[S.gCat].icon} ${GCAT[S.gCat].name}: ${money(amount)} apuntado`);$('#g-amount').value='';$('#g-notes').value='';
+  if(S.gCat==='_alim'){await store.addPurchase({month:date.slice(0,7),date,super:'',source:'gasto',total:amount,items:[],dept:'alimentacion',...(notes?{notes}:{})});toast(`🛒 Súper: ${money(amount)} apuntado`)}
+  else{await store.saveGasto(id,{date,cat:S.gCat,amount,...(notes?{notes}:{})});
+  toast(`${GCAT[S.gCat].icon} ${GCAT[S.gCat].name}: ${money(amount)} apuntado`)}$('#g-amount').value='';$('#g-notes').value='';
   if(cycleStartOf(date)!==cycleShift(S.gOff||0)){S.gOff=0;renderGastos()}});
 $('#bk-export').addEventListener('click',exportData);
 $('#bk-import').addEventListener('click',()=>{const hasData=Object.keys(S.lista).length;const b=$('#bk-import');
@@ -1542,7 +1543,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='99';
+const APP_BUILD='100';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
