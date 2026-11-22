@@ -256,7 +256,7 @@ input:focus,select:focus{border-color:var(--basket);outline:none}
 
 
 .lista-head{margin-top:16px}
-.li-acts{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;align-items:stretch}
+.li-acts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;align-items:stretch}
 .li-sticky .lista-head{padding:0!important;border:0;box-shadow:none;background:transparent}
 .li-acts .chip{justify-content:center;text-align:center;white-space:normal;line-height:1.15;font-size:12.5px;padding:7px 6px;border-radius:12px;min-height:40px;min-width:0}
 .li-acts .chip.on{background:var(--hot);border-color:var(--hot);color:#fff}.chip#li-clear:not(.on){background:#FDE3E0;border-color:#F4B4AC;color:#A82A20}.li-acts .chip.addchip{background:#DDF3E4;border-color:#8CCFA4;color:#14703A}
@@ -446,6 +446,14 @@ input.gfield[type=date]::-webkit-calendar-picker-indicator{margin-left:2px;paddi
 .gg-wrap{display:grid;gap:10px;margin-top:12px}.gg{padding:12px 14px}.gg-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:6px}.gg-add{all:unset;box-sizing:border-box;display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:10px;cursor:pointer;min-width:0;padding:2px 0;border-radius:10px}.gg-add:active{background:var(--soft)}.gg-tog{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:8px;cursor:pointer;padding:8px 2px 8px 10px;border-radius:10px}.gg-tog:active{background:var(--soft)}.gg-ic{font-size:24px}.gg-name{display:flex;flex-direction:column;min-width:0}.gg-name b{font-size:16px}.gg-sub{font-size:12.5px}.gg-tot{font-weight:800;font-size:16px}.gg-chev{font-size:18px;transition:transform .2s;color:var(--muted)}.gg.open .gg-chev{transform:rotate(180deg)}.gg-track{margin-top:8px}.gg-list{margin-top:8px;border-top:1px dashed var(--line);padding-top:4px}.gg-list .cprow{grid-template-columns:5em minmax(0,1fr) auto!important}.gg-list .cprow>span:nth-child(1){grid-column:1!important;grid-row:1!important}.gg-list .cprow>span:nth-child(2){grid-column:3!important;grid-row:1!important;justify-self:end}.gg-list .cprow>span:nth-child(3){grid-row:2!important;grid-column:1/-1!important}
 .gg{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;transition:transform .15s,box-shadow .15s}.gg.gg-drag{transform:scale(1.04);box-shadow:0 14px 30px rgba(23,35,28,.28);position:relative;z-index:5;outline:2px solid var(--ink)}
 .t-left{display:block;margin-top:5px;font-family:var(--f-mono);font-size:11.5px;font-weight:700;letter-spacing:.02em;color:#14703A;white-space:nowrap}.t-left.over{color:#C0322B}
+#fab{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;display:flex;height:58px;border-radius:17px;border:2.5px solid var(--ink);background:var(--tag);box-shadow:3px 4px 0 var(--ink);overflow:hidden;transition:opacity .2s,transform .2s}
+#fab[hidden]{display:flex!important;opacity:0;transform:translateY(12px);pointer-events:none}
+#fab button{all:unset;box-sizing:border-box;height:100%;display:grid;place-items:center;color:var(--basket);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+#fab button:active{background:rgba(0,0,0,.08)}
+#to-top{width:58px;transition:width .2s ease,opacity .2s ease}
+#to-top[hidden]{display:grid!important;width:0;opacity:0;pointer-events:none}
+#fab-add{width:53px;font-size:38px;font-weight:800;line-height:1;color:var(--ink)!important}
+#to-top:not([hidden])+#fab-add{border-left:2.5px solid var(--ink)}
 .casa-on{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--basket);color:#fff;padding:2px 8px;border-radius:99px;vertical-align:middle;margin-left:4px}.casa-code{font-size:clamp(20px,6.5vw,28px);font-weight:800;letter-spacing:.08em;text-align:center;padding:12px 8px;border:2px dashed var(--ink);border-radius:14px;background:var(--ticket);color:var(--ticket-ink)}
 .toast{pointer-events:none;position:fixed;left:50%;bottom:calc(84px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:99px;font-weight:700;z-index:60;box-shadow:var(--shadow);max-width:calc(100% - 32px);text-align:center}
 .notice{font-size:13px;padding:10px 12px;border-radius:12px;background:color-mix(in srgb,var(--tag) 30%,var(--surface));margin-top:12px}
@@ -524,8 +532,8 @@ body{overflow-x:hidden}
 .cf-a{color:#1E5AA8}.cf-b{color:#D2372E}
 
 /* Back-to-top button (Artículos) */
-#to-top{position:fixed;right:calc(14px + env(safe-area-inset-right,0px));bottom:calc(18px + env(safe-area-inset-bottom,0px));z-index:40;width:58px;height:58px;border-radius:17px;border:2.5px solid var(--ink);background:var(--tag);color:var(--basket);display:grid;place-items:center;box-shadow:3px 4px 0 var(--ink);cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;transition:opacity .2s ease,transform .2s ease,box-shadow .12s ease}#to-top:active{transform:translate(2px,3px);box-shadow:1px 1px 0 var(--ink)}
-#to-top[hidden]{display:grid!important;opacity:0;transform:translateY(12px);pointer-events:none}
+
+
 </style>
 </head>
 <body>
@@ -628,7 +636,7 @@ body{overflow-x:hidden}
   <button role="tab" data-tab="gastos" aria-selected="false"><span class="ti ti-bulb">👛</span>Otros</button>
 </nav></div>
 
-<button type="button" id="to-top" aria-label="Volver arriba" hidden><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12.5l6-6 6 6"/><path d="M6 19l6-6 6 6" opacity=".45"/></svg></button>
+<div id="fab"><button type="button" id="to-top" aria-label="Volver arriba" hidden><svg viewBox="0 0 24 24" width="38" height="38" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 12.5l6-6 6 6"/><path d="M6 19l6-6 6 6" opacity=".45"/></svg></button><button type="button" id="fab-add" data-addsheet="1" aria-label="Añadir artículo"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" aria-hidden="true"><path d="M12 4.5v15M4.5 12h15"/></svg></button></div>
 <div id="sheet-root"></div>
 <div class="toast" id="toast" hidden></div>
 
@@ -1056,7 +1064,7 @@ document.addEventListener('click',async e=>{
   if(d.lif){S.liFilter=d.lif;$('#sheet-root').innerHTML='';renderLista();return}
   if(d.liedit){openListaEdit(d.liedit);return}
   if(t.id==='li-top'){S.faltaTop=!S.faltaTop;try{localStorage.setItem('cesta-falta-top',S.faltaTop?'1':'')}catch(_){}renderLista();return}
-  if(t.id==='li-clear'){if(t.dataset.armed){S.cart={};S.picked={};S.keep={};store.saveCart();clearFalta()}else{t.dataset.armed=1;t.textContent='¿Seguro?';t.classList.add('on');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='Desmarcar';t.classList.remove('on')}},4000)}return}
+  if(t.id==='li-clear'){if(t.dataset.armed){S.cart={};S.picked={};S.keep={};store.saveCart();clearFalta()}else{t.dataset.armed=1;t.textContent='¿Seguro?';t.classList.add('on');setTimeout(()=>{if(t.isConnected){delete t.dataset.armed;t.textContent='Desmarcar todo';t.classList.remove('on')}},4000)}return}
   if(d.inc){setQty(d.inc,(S.cart[d.inc]||0)+1);if(d.fromcmp)openCompare(d.fromcmp);return}
   if(d.dec){setQty(d.dec,(S.cart[d.dec]||0)-1);return}
   if(d.gadd){openGastoSheet(d.gadd);return}
@@ -1294,8 +1302,8 @@ function renderLista(){
   const guesses=faltan.filter(([,x])=>{const m=matchLista(x);return m&&m.fuzzy}).length;
   const head=all.length?`<div class="card lista-head"><div class="li-acts">
       <button class="chip${Date.now()<(S.partyUntil||0)?' party':''}" id="li-top" aria-pressed="${!!S.faltaTop}" aria-label="Ver la cesta por súper y categoría"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 4h2.6l2.3 10.6a1.6 1.6 0 0 0 1.6 1.3h8.3a1.6 1.6 0 0 0 1.6-1.2L20.7 8H6.2"/><path d="M9.5 11.5h8.6" opacity=".55"/><circle cx="9.6" cy="19.6" r="1.5" fill="currentColor"/><circle cx="17.3" cy="19.6" r="1.5" fill="currentColor"/></svg></button>
-      <button class="chip" id="li-clear" ${faltan.length?'':'disabled'}>Desmarcar</button>
-      <button class="chip addchip" data-addsheet="1"><span class="pl">✚</span> Añadir</button><button type="button" class="chip li-menu li-otros" data-tab="gastos"><span>Otros<br>gastos</span></button></div>
+      <button class="chip" id="li-clear" ${faltan.length?'':'disabled'}>Desmarcar todo</button>
+      <button type="button" class="chip li-menu li-otros" data-tab="gastos"><span>Otros<br>gastos</span></button></div>
     </div>`
     :`<div class="empty"><div class="big">Aún no tienes artículos</div><p>Añade aquí lo que compras siempre y, antes de ir al súper, marca lo que te falta.</p><div class="row" style="justify-content:center"><button class="btn" data-addsheet="1">✚ Añadir artículo</button>${mode==='local'?'<button class="btn ghost" data-bkimport="1">⬆️ Importar mis datos</button><button class="btn ghost" data-gojoin="1">🔑 Unirme a una lista compartida</button>':''}</div></div>`;
   const q=norm($('#liq').value);const top=!!S.faltaTop;
@@ -1535,7 +1543,7 @@ $('#liq-clear').addEventListener('click',()=>{const i=$('#liq');i.value='';$('#l
 switchTab('frecuentes');
 boot();
 /* Back-to-top button: shown in Artículos once you have scrolled down */
-(function(){const b=$('#to-top');const upd=()=>{const h=($('.ticket')?.offsetHeight||120);b.hidden=!(S.tab==='frecuentes'&&scrollY>h)};
+(function(){const b=$('#to-top');const upd=()=>{const h=($('.ticket')?.offsetHeight||120);b.hidden=!(S.tab==='frecuentes'&&scrollY>h);$('#fab').hidden=S.tab!=='frecuentes'};
   addEventListener('scroll',upd,{passive:true});const go=e=>{e.preventDefault();scrollTo({top:0,behavior:'smooth'})};b.addEventListener('touchend',go,{passive:false});b.addEventListener('click',go);
   const sw=switchTab;switchTab=function(t){sw(t);upd()};upd()})();
 
@@ -1575,7 +1583,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='109';
+const APP_BUILD='110';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
