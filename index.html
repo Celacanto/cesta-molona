@@ -808,8 +808,8 @@ function renderHeader(){
   const set=(id,v)=>{const el=$(id);const t=money(v);if(el.textContent!==t){el.textContent=t;if(lastTotals[id]!==undefined)bump(el)}lastTotals[id]=t};
   set('#t-month',spent);set('#t-proj',cart);
   {const bud=(S.settings&&S.settings.gBudget)||{};const st=cycleStartOf(today());let B=0,G=0;
-    for(const [k,v] of Object.entries(bud)){if(!(+v>0))continue;B+=+v;G+=k==='_alim'?spent:Object.values(S.gastos||{}).filter(g=>g.cat===k&&cycleStartOf(g.date)===st).reduce((a,g)=>a+(+g.amount||0),0)}
-    const el=$('#t-left');if(el){el.hidden=!(B>0);if(B>0){const r=B-G;el.textContent=r>=0?`Quedan ${money(r)}`:`Te pasas ${money(-r)}`;el.classList.toggle('over',r<0);el.title=`Presupuesto total de Otros: ${money(B)}`}}}
+    for(const [k,v] of Object.entries(bud)){if(k==='_alim'||!(+v>0))continue;B+=+v;G+=Object.values(S.gastos||{}).filter(g=>g.cat===k&&cycleStartOf(g.date)===st).reduce((a,g)=>a+(+g.amount||0),0)}
+    const el=$('#t-left');if(el){el.hidden=!(B>0);if(B>0){const r=B-G;el.textContent=r>=0?`Quedan ${money(r)}`:`Te pasas ${money(-r)}`;el.classList.toggle('over',r<0);el.title=`Presupuesto de farmacia, tirititrán, gasolina y otros: ${money(B)}`}}}
 }
 /* Name of a supermarket as shown on screen: Carrefour in two colours ("Carre" blue, "four" red) */
 function superName(id,plain){const s=superOf(id);if(norm(s.name)==='carrefour')return '<span class="cf"><span class="cf-a">Carre</span><span class="cf-b">four</span></span>';return plain?esc(s.name):`<span style="color:${esc(s.color)}">${esc(s.name)}</span>`}
@@ -1583,7 +1583,7 @@ window.addEventListener('unhandledrejection',e=>diag('Error: '+((e.reason&&e.rea
 <script>
 /* Registro del service worker: permite instalar la app y abrirla sin conexión */
 /* Si hay una versión nueva publicada, la app se recarga sola al volver a abrirla */
-const APP_BUILD='114';
+const APP_BUILD='115';
 {const v=document.getElementById('sp-ver');if(v)v.textContent='Versión '+APP_BUILD}
 document.addEventListener('visibilitychange',()=>{if(document.visibilityState!=='visible')return;
   fetch('version.txt',{cache:'no-store'}).then(r=>r.ok?r.text():'').then(v=>{v=(v||'').trim();if(v&&v!==APP_BUILD&&!document.getElementById('scrim'))location.reload()}).catch(()=>{})});
